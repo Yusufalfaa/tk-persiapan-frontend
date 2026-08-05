@@ -1,16 +1,18 @@
+import Hero from "@/components/sections/hero";
+import News from "@/components/sections/news";
+import Profile from "@/components/sections/profile";
+import Teachers from "@/components/sections/teachers";
+import VisionMission from "@/components/sections/vision-mission";
 
 
 export default function Home() {
   return (
     <>
-      <section
-        id="home"
-        className="flex min-h-screen items-center justify-center bg-zinc-50"
-      >
-        <h1 className="text-5xl font-bold">
-          TK Persiapan
-        </h1>
-      </section>
+      <Hero />
+      <Profile />
+      <VisionMission />
+      <Teachers />
+      <News />
     </>
   );
 }
