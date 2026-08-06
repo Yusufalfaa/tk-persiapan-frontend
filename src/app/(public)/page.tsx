@@ -1,18 +1,21 @@
-import Hero from "@/components/sections/hero";
-import News from "@/components/sections/news";
-import Profile from "@/components/sections/profile";
-import Teachers from "@/components/sections/teachers";
-import VisionMission from "@/components/sections/vision-mission";
-
+import ContactSection from "@/components/sections/contact-section";
+import HeroSection from "@/components/sections/hero-section";
+import NewsSection from "@/components/sections/news-section";
+import ProfileSection from "@/components/sections/profile-section";
+import TeachersSection from "@/components/sections/teachers-section";
+import VideoProfileSection from "@/components/sections/video-profile-section";
+import VisionMissionSection from "@/components/sections/vision-mission-sections";
 
 export default function Home() {
   return (
     <>
-      <Hero />
-      <Profile />
-      <VisionMission />
-      <Teachers />
-      <News />
+      <HeroSection />
+      <ProfileSection />
+      <VisionMissionSection />
+      <VideoProfileSection />
+      <TeachersSection />
+      <NewsSection />
+      <ContactSection />
     </>
   );
 }

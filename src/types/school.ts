@@ -21,7 +21,7 @@ export interface SchoolProfile {
 
   phone: string;
   email: string;
-  instagram: string | null;
+  instagramUrl: string | null;
 
   videoUrl: string | null;
 

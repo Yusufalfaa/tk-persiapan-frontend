@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { getSchoolProfile } from "@/services/school.service";
 
-export default async function Profile() {
+export default async function ProfileSection() {
   const response = await getSchoolProfile();
   const school = response;
 
