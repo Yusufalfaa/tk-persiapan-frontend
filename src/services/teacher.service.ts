@@ -1,14 +1,13 @@
 import api from "@/lib/axios";
+import type {
+  Teacher,
+  TeacherListResponse
+} from "@/types/teacher";
 
-export interface Teacher {
-  id: number;
-  name: string;
-  position: string;
-  photoPath: string | null;
-}
-
-export async function getTeachers() {
-  const response = await api.get("/api/teachers");
+export async function getTeachers(): Promise<Teacher[]> {
+  const response = await api.get<TeacherListResponse>(
+    "/api/teachers"
+  );
 
   return response.data.data;
 }

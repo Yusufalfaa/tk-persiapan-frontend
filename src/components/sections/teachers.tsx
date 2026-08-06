@@ -35,9 +35,9 @@ export default async function Teachers() {
                 <div className="rounded-xl border p-4">
 
                   <div className="relative aspect-[3/4] overflow-hidden rounded-lg bg-gray-100">
-                    {teacher.photoPath ? (
+                    {teacher.photoUrl ? (
                       <img
-                        src={`${process.env.NEXT_PUBLIC_API_URL}${teacher.photoPath}`}
+                        src={teacher.photoUrl}
                         alt={teacher.name}
                         className="h-full w-full object-cover"
                       />

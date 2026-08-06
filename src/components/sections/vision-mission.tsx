@@ -1,10 +1,10 @@
-import { getSchoolProfile } from "@/lib/api";
+import { getSchoolProfile } from "@/services/school.service";
 import { Heart, BookOpen, Users } from "lucide-react";
 
 export default async function VisionMission() {
   const response = await getSchoolProfile();
 
-  const school = response.data;
+  const school = response;
 
   return (
     <section className="py-20">

@@ -1,42 +1,20 @@
 import api from "@/lib/axios";
+import type {
+  News,
+  NewsDetail,
+  NewsListResponse
+} from "@/types/news";
 
-export interface News {
-  id: number;
-  title: string;
-  slug: string;
-  thumbnail: string | null;
-  excerpt: string | null;
-  createdAt: string;
-}
-
-export interface NewsSection {
-  id: number;
-  type: "TEXT" | "IMAGE" | "YOUTUBE";
-  order: number;
-  text: string | null;
-  imagePath: string | null;
-  youtubeUrl: string | null;
-}
-
-export interface NewsDetail extends News {
-  sections: NewsSection[];
-}
-
-
-export async function getNews(): Promise<News[]> {
-  const response = await api.get(
-    "/api/news?page=1&size=3"
+export async function getNews(page = 1, size = 3): Promise<NewsListResponse> {
+  const response = await api.get<NewsListResponse>(
+    `/api/news?page=${page}&size=${size}`
   );
 
-  return response.data.data;
+  return response.data;
 }
 
-
-export async function getNewsDetail(
-  slug: string
-): Promise<NewsDetail> {
-
-  const response = await api.get(
+export async function getNewsDetail(slug: string): Promise<NewsDetail> {
+  const response = await api.get<{data: NewsDetail;}>(
     `/api/news/${slug}`
   );
 

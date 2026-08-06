@@ -1,8 +1,6 @@
-import { getNewsDetail } from "@/lib/api";
+import { getNewsDetail } from "@/services/news.service";
 
-export default async function NewsDetail({
-  params,
-}: {
+export default async function NewsDetail({params,}: {
   params: Promise<{ slug: string }>;
 }) {
 
@@ -18,9 +16,7 @@ export default async function NewsDetail({
     );
   }
 
-
-  const news = response.data;
-
+  const news = response;
 
   return (
     <article className="py-20">
@@ -55,11 +51,11 @@ export default async function NewsDetail({
 
 
               {/* IMAGE */}
-              {section.type === "IMAGE" &&  section.imagePath && (
+              {section.type === "IMAGE" &&  section.imageUrl && (
                 <div className="relative aspect-video overflow-hidden rounded-xl">
 
                   <img
-                    src={`${process.env.NEXT_PUBLIC_API_URL}${section.imagePath}`}
+                    src={`${process.env.NEXT_PUBLIC_API_URL}${section.imageUrl}`}
                     alt={news.title}
                     className="h-full w-full object-cover"
                   />
