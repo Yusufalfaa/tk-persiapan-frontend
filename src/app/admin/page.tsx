@@ -1,9 +1,35 @@
-export default function AdminDashboardPage() {
+"use client";
+
+import { useEffect, useState } from "react";
+
+import { getCurrentUser } from "@/services/auth.service";
+import type { CurrentUser } from "@/types/auth";
+import AdminSidebar from "@/components/admin/AdminSidebar";
+
+
+export default function AdminPage() {
+    const [user, setUser] = useState<CurrentUser | null>(null);
+
+    useEffect(() => {
+        async function loadUser() {
+            try {
+                const currentUser = await getCurrentUser();
+                setUser(currentUser);
+            } catch {
+                window.location.href = "/admin/login";
+            }
+        }
+
+        loadUser();
+    }, []);
+
+    if (!user) {
+        return <div>Loading...</div>;
+    }
+
     return (
-        <main className="p-10">
-            <h1 className="text-3xl font-bold">
-                Dashboard Admin
-            </h1>
-        </main>
+        <div>
+            <AdminSidebar />
+        </div>
     );
 }
