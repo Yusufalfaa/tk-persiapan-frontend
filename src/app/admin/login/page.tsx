@@ -15,6 +15,7 @@ import {
     CardTitle,
 } from "@/components/ui/card";
 
+import { toast } from "sonner";
 
 export default function AdminLoginPage() {
     const router = useRouter();
@@ -23,8 +24,6 @@ export default function AdminLoginPage() {
     const [password, setPassword] = useState("");
 
     const [loading, setLoading] = useState(false);
-    const [error, setError] = useState("");
-
 
     async function handleSubmit(
         e: React.FormEvent<HTMLFormElement>
@@ -32,7 +31,6 @@ export default function AdminLoginPage() {
         e.preventDefault();
 
         setLoading(true);
-        setError("");
 
         try {
             await login({
@@ -40,22 +38,33 @@ export default function AdminLoginPage() {
                 password,
             });
 
-            router.push("/admin");
+            toast.success("Login berhasil", {
+                description: "Selamat datang di dashboard admin.",
+            });
+
+            setTimeout(() => {
+                router.push("/admin");
+            }, 500);
         } catch {
-            setError("Username atau password salah.");
+            toast.error("Login gagal", {
+                description: "Username atau password salah.",
+            });
         } finally {
             setLoading(false);
         }
     }
 
-
     return (
-        <main className="flex min-h-screen items-center justify-center bg-muted/30 p-6">
-            <Card className="w-full max-w-md">
-                <CardHeader>
-                    <CardTitle className="text-center text-2xl">
+        <main className="flex min-h-screen items-center justify-center bg-[#F5F2EC] p-6">
+            <Card className="w-full max-w-md border-0 bg-[#FFFDF7] shadow-lg">
+                <CardHeader className="space-y-2">
+                    <CardTitle className="text-center text-2xl font-bold text-[#FF6B6B]">
                         Login Admin
                     </CardTitle>
+
+                    <p className="text-center text-sm text-black/60">
+                        Masuk untuk mengelola website TK Persiapan
+                    </p>
                 </CardHeader>
 
                 <CardContent>
@@ -64,7 +73,10 @@ export default function AdminLoginPage() {
                         className="space-y-5"
                     >
                         <div className="space-y-2">
-                            <Label htmlFor="username">
+                            <Label
+                                htmlFor="username"
+                                className="text-black"
+                            >
                                 Username
                             </Label>
 
@@ -75,12 +87,15 @@ export default function AdminLoginPage() {
                                     setUsername(e.target.value)
                                 }
                                 autoComplete="username"
+                                className="border-black/20 bg-[#FFFDF7] focus-visible:border-[#FF6B6B] focus-visible:ring-[#FF6B6B]/30"
                             />
                         </div>
 
-
                         <div className="space-y-2">
-                            <Label htmlFor="password">
+                            <Label
+                                htmlFor="password"
+                                className="text-black"
+                            >
                                 Password
                             </Label>
 
@@ -92,21 +107,14 @@ export default function AdminLoginPage() {
                                     setPassword(e.target.value)
                                 }
                                 autoComplete="current-password"
+                                className="border-black/20 bg-[#FFFDF7] focus-visible:border-[#FF6B6B] focus-visible:ring-[#FF6B6B]/30"
                             />
                         </div>
 
-
-                        {error && (
-                            <p className="text-sm text-destructive">
-                                {error}
-                            </p>
-                        )}
-
-
                         <Button
                             type="submit"
-                            className="w-full"
                             disabled={loading}
+                            className="h-11 w-full cursor-pointer bg-[#FF6B6B]/80 text-white hover:bg-[#FF6B6B]"
                         >
                             {loading ? "Masuk..." : "Masuk"}
                         </Button>
