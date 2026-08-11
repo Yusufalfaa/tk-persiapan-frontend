@@ -16,12 +16,6 @@ export function proxy(request: NextRequest) {
         }
     }
 
-    if (pathname === "/admin/login" && accessToken) {
-        return NextResponse.redirect(
-            new URL("/admin", request.url)
-        );
-    }
-
     return NextResponse.next();
 }
 

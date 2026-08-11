@@ -5,6 +5,9 @@ import { useEffect, useState } from "react";
 import { getCurrentUser } from "@/services/auth.service";
 import type { CurrentUser } from "@/types/auth";
 import AdminSidebar from "@/components/admin/AdminSidebar";
+import AdminHeader from "@/components/admin/AdminHeader";
+import DashboardStats from "@/components/admin/DashboardStats";
+import DashboardLatestNews from "@/components/admin/DashboardLatestNews";
 
 
 export default function AdminPage() {
@@ -28,8 +31,18 @@ export default function AdminPage() {
     }
 
     return (
-        <div>
+        <div className="flex min-h-screen">
             <AdminSidebar />
+
+            <div className="flex min-w-0 flex-1 flex-col">
+                <AdminHeader title="Dashboard" title2="Overview" />
+
+               <main className="flex-1 bg-[#F5F2EC] p-8">
+                    <DashboardStats />
+
+                    <DashboardLatestNews />
+                </main>
+            </div>
         </div>
     );
 }
