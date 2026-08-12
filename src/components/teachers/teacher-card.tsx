@@ -14,42 +14,21 @@ export default function TeacherCard({
   return (
     <div className="rounded-xl border p-4">
 
-      <div
-        className="
-          relative
-          aspect-[3/4]
-          overflow-hidden
-          rounded-lg
-          bg-gray-100
-        "
-      >
+      <div className="relative aspect-[3/4] overflow-hidden rounded-lg bg-gray-100">
 
         {teacher.photoUrl ? (
 
           <img
             src={teacher.photoUrl}
             alt={teacher.name}
-            className="
-              h-full
-              w-full
-              object-cover
-            "
+            className="h-full w-full object-cover"
           />
 
         ) : (
 
-          <div className="
-            flex
-            h-full
-            items-center
-            justify-center
-          ">
+          <div className="flex h-full items-center justify-center">
             <UserRound
-              className="
-                h-20
-                w-20
-                text-gray-400
-              "
+              className="h-20 w-20 text-gray-400"
             />
           </div>
 
