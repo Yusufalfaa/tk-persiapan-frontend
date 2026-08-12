@@ -79,7 +79,7 @@ export default function AdminSidebar() {
     }
 
     return (
-        <aside className="flex h-screen w-[360px] shrink-0 flex-col bg-[#1B2235]">
+        <aside className="sticky top-0 flex h-screen w-[360px] shrink-0 flex-col bg-[#1B2235]">
             {/* Logo */}
             <div className="flex h-24 items-center px-8">
                 <Link href="/admin">

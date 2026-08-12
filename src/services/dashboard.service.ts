@@ -1,3 +1,4 @@
+import api from "@/lib/axios";
 import type { DashboardStat } from "@/types/dashboard";
 
 interface DashboardStatsResponse {
@@ -5,20 +6,9 @@ interface DashboardStatsResponse {
 }
 
 export async function getDashboardStats(): Promise<DashboardStat> {
-    const response = await fetch(
-        "/api/admin/dashboard/stats",
-        {
-            method: "GET",
-            credentials: "include",
-        }
+    const response = await api.get<DashboardStatsResponse>(
+        "/api/admin/dashboard/stats"
     );
 
-    if (!response.ok) {
-        throw new Error("Failed to load dashboard stats");
-    }
-
-    const result: DashboardStatsResponse =
-        await response.json();
-
-    return result.data;
+    return response.data.data;
 }

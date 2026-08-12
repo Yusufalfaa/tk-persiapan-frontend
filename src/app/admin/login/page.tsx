@@ -39,15 +39,19 @@ export default function AdminLoginPage() {
             });
 
             toast.success("Login berhasil", {
-                description: "Selamat datang di dashboard admin.",
+                description:
+                    "Selamat datang di dashboard admin.",
             });
 
             setTimeout(() => {
                 router.push("/admin");
             }, 500);
-        } catch {
+        } catch (error) {
+            console.error("Login failed:", error);
+
             toast.error("Login gagal", {
-                description: "Username atau password salah.",
+                description:
+                    "Username atau password salah.",
             });
         } finally {
             setLoading(false);

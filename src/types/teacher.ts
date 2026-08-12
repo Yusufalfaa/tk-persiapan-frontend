@@ -8,6 +8,19 @@ export interface Teacher {
   updatedAt: string;
 }
 
+export interface CreateTeacherRequest {
+    name: string;
+    position: string;
+    order?: number;
+    photo?: File;
+}
+
+export interface UpdateTeacherRequest {
+    name: string;
+    position: string;
+    order?: number;
+    photo?: File;
+}
 
 export interface TeacherPagination {
   page: number;

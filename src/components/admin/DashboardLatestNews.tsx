@@ -10,7 +10,6 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 
 import { getAdminNews } from "@/services/news.service";
 import type { NewsList } from "@/types/news";

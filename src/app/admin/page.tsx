@@ -31,7 +31,7 @@ export default function AdminPage() {
     }
 
     return (
-        <div className="flex min-h-screen">
+        <div className="flex min-h-screen bg-[#F5F2EC]">
             <AdminSidebar />
 
             <div className="flex min-w-0 flex-1 flex-col">
