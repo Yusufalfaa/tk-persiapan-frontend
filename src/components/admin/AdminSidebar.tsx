@@ -1,6 +1,7 @@
 "use client";
 
-import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
+import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
 
 import {
@@ -9,6 +10,7 @@ import {
     Newspaper,
     School,
     UserCircle,
+    UserCog,
     LogOut,
 } from "lucide-react";
 
@@ -27,8 +29,13 @@ import {
 } from "@/components/ui/alert-dialog";
 
 import { Separator } from "@/components/ui/separator";
-import { useRouter } from "next/navigation";
-import { logout } from "@/services/auth.service";
+
+import {
+    getCurrentUser,
+    logout,
+} from "@/services/auth.service";
+
+import type { CurrentUser } from "@/types/auth";
 
 const menuItems = [
     {
@@ -55,27 +62,56 @@ const menuItems = [
 
 export default function AdminSidebar() {
     const pathname = usePathname();
-
     const router = useRouter();
+
+    const [user, setUser] =
+        useState<CurrentUser | null>(null);
+
+    useEffect(() => {
+        async function loadUser() {
+            try {
+                const currentUser =
+                    await getCurrentUser();
+
+                setUser(currentUser);
+            } catch (error) {
+                console.error(
+                    "Failed to load current user:",
+                    error
+                );
+            }
+        }
+
+        loadUser();
+    }, []);
 
     async function handleLogout() {
         try {
             await logout();
 
             toast.success("Logout berhasil", {
-                description: "Kamu telah keluar dari dashboard admin.",
+                description:
+                    "Kamu telah keluar dari dashboard admin.",
             });
 
             setTimeout(() => {
                 router.replace("/admin/login");
             }, 500);
         } catch (error) {
-            console.error("Logout failed:", error);
+            console.error(
+                "Logout failed:",
+                error
+            );
 
             toast.error("Logout gagal", {
-                description: "Silakan coba lagi.",
+                description:
+                    "Silakan coba lagi.",
             });
         }
+    }
+
+    function isActive(href: string) {
+        return pathname === href;
     }
 
     return (
@@ -98,7 +134,6 @@ export default function AdminSidebar() {
             <nav className="flex-1 space-y-2 p-6">
                 {menuItems.map((item) => {
                     const Icon = item.icon;
-                    const isActive = pathname === item.href;
 
                     return (
                         <Link
@@ -109,23 +144,54 @@ export default function AdminSidebar() {
                                 rounded-md px-4 text-base
                                 transition-colors
                                 ${
-                                    isActive
+                                    isActive(
+                                        item.href
+                                    )
                                         ? "bg-[#FF6B6B]/50 text-[#FF6B6B]/80"
                                         : "text-white/50 hover:bg-white/5 hover:text-white/80"
                                 }
                             `}
                         >
                             <Icon className="size-5" />
-                            <span>{item.label}</span>
+
+                            <span>
+                                {item.label}
+                            </span>
                         </Link>
                     );
                 })}
+
+                {/* Admin Management */}
+                {user?.role === "SUPER_ADMIN" && (
+                    <Link
+                        href="/admin/admins"
+                        className={`
+                            flex h-12 w-full items-center gap-4
+                            rounded-md px-4 text-base
+                            transition-colors
+                            ${
+                                isActive(
+                                    "/admin/admins"
+                                )
+                                    ? "bg-[#FF6B6B]/50 text-[#FF6B6B]/80"
+                                    : "text-white/50 hover:bg-white/5 hover:text-white/80"
+                            }
+                        `}
+                    >
+                        <UserCog className="size-5" />
+
+                        <span>
+                            Admin Management
+                        </span>
+                    </Link>
+                )}
             </nav>
 
             {/* Bottom Menu */}
             <div className="p-6">
                 <Separator className="mb-4 bg-white/10" />
 
+                {/* Akun Saya */}
                 <Link
                     href="/admin/profile"
                     className={`
@@ -133,22 +199,31 @@ export default function AdminSidebar() {
                         rounded-md px-4 text-base
                         transition-colors
                         ${
-                            pathname === "/admin/profile"
+                            isActive(
+                                "/admin/profile"
+                            )
                                 ? "bg-[#FF6B6B]/50 text-[#FF6B6B]/80"
                                 : "text-white/50 hover:bg-white/5 hover:text-white/80"
                         }
                     `}
                 >
                     <UserCircle className="size-5" />
-                    <span>Akun Saya</span>
+
+                    <span>
+                        Akun Saya
+                    </span>
                 </Link>
 
+                {/* Logout */}
                 <AlertDialog>
                     <AlertDialogTrigger
                         className="mt-2 flex h-12 w-full cursor-pointer items-center justify-start gap-4 rounded-md px-4 text-base text-white/50 transition-colors hover:bg-white/5 hover:text-white/80"
                     >
                         <LogOut className="size-5" />
-                        <span>Logout</span>
+
+                        <span>
+                            Logout
+                        </span>
                     </AlertDialogTrigger>
 
                     <AlertDialogContent className="border-0 bg-[#FFFDF7]">
@@ -158,7 +233,8 @@ export default function AdminSidebar() {
                             </AlertDialogTitle>
 
                             <AlertDialogDescription className="text-black/60">
-                                Apakah kamu yakin ingin keluar dari
+                                Apakah kamu yakin
+                                ingin keluar dari
                                 dashboard admin?
                             </AlertDialogDescription>
                         </AlertDialogHeader>
@@ -172,7 +248,9 @@ export default function AdminSidebar() {
 
                             <AlertDialogAction
                                 className="cursor-pointer bg-[#FF6B6B]/80 text-white hover:bg-[#FF6B6B]"
-                                onClick={handleLogout}
+                                onClick={
+                                    handleLogout
+                                }
                             >
                                 Yes
                             </AlertDialogAction>
