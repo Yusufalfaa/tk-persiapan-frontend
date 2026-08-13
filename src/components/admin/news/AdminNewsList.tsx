@@ -134,7 +134,7 @@ export default function AdminNewsList({
             <Card className="border-0 bg-[#FFFDF7]">
                 <CardHeader className="flex flex-row items-center justify-between">
                     <CardTitle className="text-xl font-semibold text-black">
-                        Data Berita
+                        Daftar Berita
                     </CardTitle>
 
                     <Button

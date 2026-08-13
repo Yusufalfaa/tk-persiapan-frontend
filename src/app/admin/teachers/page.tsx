@@ -39,8 +39,8 @@ export default function AdminTeachersPage() {
 
             <div className="flex min-w-0 flex-1 flex-col">
                 <AdminHeader
-                    title="Teacher"
-                    title2="Management"
+                    title="Data"
+                    title2="Guru"
                 />
 
                 <main className="flex-1 p-8">

@@ -16,8 +16,8 @@ export default function AdminManagementPage() {
 
             <div className="flex min-w-0 flex-1 flex-col">
                 <AdminHeader
-                    title="Admin"
-                    title2="Management"
+                    title="Pengelolaan"
+                    title2="Admin"
                 />
 
                 <main className="flex-1 p-8">

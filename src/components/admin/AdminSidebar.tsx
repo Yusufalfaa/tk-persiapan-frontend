@@ -39,12 +39,12 @@ import type { CurrentUser } from "@/types/auth";
 
 const menuItems = [
     {
-        label: "Dashboard",
+        label: "Halaman Utama",
         href: "/admin",
         icon: LayoutDashboard,
     },
     {
-        label: "Guru",
+        label: "Data Guru",
         href: "/admin/teachers",
         icon: Users,
     },
@@ -181,7 +181,7 @@ export default function AdminSidebar() {
                         <UserCog className="size-5" />
 
                         <span>
-                            Admin Management
+                            Pengelolaan Admin
                         </span>
                     </Link>
                 )}

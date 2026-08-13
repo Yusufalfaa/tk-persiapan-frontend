@@ -11,8 +11,8 @@ export default function AdminProfilePage() {
 
             <div className="flex min-w-0 flex-1 flex-col">
                 <AdminHeader
-                    title="Admin Control"
-                    title2="Profile"
+                    title="Akun"
+                    title2="Saya"
                 />
 
                 <main className="flex-1 p-8">

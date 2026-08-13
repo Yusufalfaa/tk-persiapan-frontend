@@ -35,7 +35,7 @@ export default function AdminPage() {
             <AdminSidebar />
 
             <div className="flex min-w-0 flex-1 flex-col">
-                <AdminHeader title="Dashboard" title2="Overview" />
+                <AdminHeader title="Halaman" title2="Utama" />
 
                <main className="flex-1 bg-[#F5F2EC] p-8">
                     <DashboardStats />

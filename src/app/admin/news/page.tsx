@@ -42,8 +42,8 @@ export default function AdminNewsPage() {
 
             <div className="flex min-w-0 flex-1 flex-col">
                 <AdminHeader
-                    title="News"
-                    title2="Management"
+                    title="Pengelolaan"
+                    title2="Berita"
                 />
 
                 <main className="flex-1 p-8">

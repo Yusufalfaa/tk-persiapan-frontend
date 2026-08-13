@@ -47,8 +47,8 @@ export default function AdminSchoolPage() {
 
             <div className="flex min-w-0 flex-1 flex-col">
                 <AdminHeader
-                    title="School"
-                    title2="Profile"
+                    title="Profil"
+                    title2="Sekolah"
                 />
 
                 <main className="flex-1 p-8">

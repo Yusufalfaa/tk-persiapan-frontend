@@ -63,10 +63,6 @@ export default function AdminList({
     const [loading, setLoading] =
         useState(true);
 
-    // =========================================================
-    // RESET PASSWORD
-    // =========================================================
-
     const [resetAdmin, setResetAdmin] =
         useState<Admin | null>(null);
 
@@ -85,19 +81,12 @@ export default function AdminList({
     const [resettingPassword, setResettingPassword] =
         useState(false);
 
-    // =========================================================
-    // DELETE
-    // =========================================================
 
     const [deleteTarget, setDeleteTarget] =
         useState<Admin | null>(null);
 
     const [deleting, setDeleting] =
         useState(false);
-
-    // =========================================================
-    // LOAD
-    // =========================================================
 
     async function loadAdmins(
         page: number = 1
@@ -156,10 +145,6 @@ export default function AdminList({
 
         loadAdmins(meta.page + 1);
     }
-
-    // =========================================================
-    // RESET PASSWORD
-    // =========================================================
 
     function openResetPassword(
         admin: Admin
@@ -280,10 +265,6 @@ export default function AdminList({
         }
     }
 
-    // =========================================================
-    // DELETE
-    // =========================================================
-
     async function handleDelete() {
         if (!deleteTarget) {
             return;
@@ -362,7 +343,7 @@ export default function AdminList({
                 <CardHeader className="flex flex-row items-center justify-between">
                     <div>
                         <CardTitle className="text-xl font-semibold text-black">
-                            Admin Management
+                            Daftar Admin 
                         </CardTitle>
 
                         <p className="mt-1 text-sm text-black/40">
@@ -599,9 +580,7 @@ export default function AdminList({
                 </CardContent>
             </Card>
 
-            {/* ================================================= */}
             {/* RESET PASSWORD DIALOG */}
-            {/* ================================================= */}
 
             <AlertDialog
                 open={resetAdmin !== null}
@@ -785,9 +764,7 @@ export default function AdminList({
                 </AlertDialogContent>
             </AlertDialog>
 
-            {/* ================================================= */}
             {/* DELETE DIALOG */}
-            {/* ================================================= */}
 
             <AlertDialog
                 open={deleteTarget !== null}
