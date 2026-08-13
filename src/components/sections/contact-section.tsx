@@ -1,4 +1,4 @@
-import { getSchoolProfile } from "@/services/school.service";
+import { getSchool } from "@/services/school.service";
 import {
   MapPin,
   Phone,
@@ -11,7 +11,7 @@ import {
 
 export default async function ContactSection() {
 
-  const school = await getSchoolProfile();
+  const school = await getSchool();
 
 
   return (

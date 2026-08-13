@@ -72,6 +72,10 @@ export default function DashboardLatestNews() {
                                     </th>
 
                                     <th className="px-4 py-3 font-medium">
+                                        Author
+                                    </th>
+
+                                    <th className="px-4 py-3 font-medium">
                                         Tanggal
                                     </th>
 
@@ -91,12 +95,14 @@ export default function DashboardLatestNews() {
                                             {item.title}
                                         </td>
 
+                                        <td className="px-4 py-4 text-sm text-black/60">
+                                            {item.author?.name ?? "-"}
+                                        </td>
+
                                         <td className="px-4 py-4 text-sm text-muted-foreground">
                                             {new Date(
                                                 item.createdAt
-                                            ).toLocaleDateString(
-                                                "id-ID"
-                                            )}
+                                            ).toLocaleDateString("id-ID")}
                                         </td>
 
                                         <td className="px-4 py-4">

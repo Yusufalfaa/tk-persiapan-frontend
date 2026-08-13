@@ -3,6 +3,11 @@ export type NewsSectionType =
     | "IMAGE"
     | "YOUTUBE";
 
+export interface NewsAuthor {
+    id: number;
+    name: string;
+}
+
 export interface NewsList {
     id: number;
     title: string;
@@ -10,6 +15,7 @@ export interface NewsList {
     thumbnailUrl: string | null;
     excerpt: string | null;
     isPublished: boolean;
+    author: NewsAuthor | null;
     createdAt: string;
     updatedAt: string;
 }

@@ -1,8 +1,8 @@
 import Image from "next/image";
-import { getSchoolProfile } from "@/services/school.service";
+import { getSchool } from "@/services/school.service";
 
 export default async function ProfileSection() {
-  const response = await getSchoolProfile();
+  const response = await getSchool();
   const school = response;
 
   return (

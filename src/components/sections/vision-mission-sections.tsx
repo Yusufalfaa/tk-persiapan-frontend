@@ -1,8 +1,8 @@
-import { getSchoolProfile } from "@/services/school.service";
+import { getSchool } from "@/services/school.service";
 import { Heart, BookOpen, Users } from "lucide-react";
 
 export default async function VisionMissionSection() {
-  const response = await getSchoolProfile();
+  const response = await getSchool();
 
   const school = response;
 

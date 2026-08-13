@@ -1,9 +1,9 @@
-import { getSchoolProfile } from "@/services/school.service";
+import { getSchool } from "@/services/school.service";
 
 
 export default async function VideoProfileSection() {
 
-  const school = await getSchoolProfile();
+  const school = await getSchool();
 
 
   if (!school.videoUrl) {
