@@ -4,7 +4,7 @@ export default function HeroSection() {
   return (
     <section
       id="home"
-      className="relative flex min-h-screen items-center justify-center"
+      className="relative isolate flex min-h-screen items-center justify-center overflow-hidden"
     >
       {/* Background Image */}
       <Image
@@ -13,14 +13,14 @@ export default function HeroSection() {
         fill
         priority
         sizes="100vw"
-        className="-z-10 object-cover"
+        className="object-cover"
       />
 
       {/* Dark Overlay */}
-      <div className="absolute inset-0 -z-10 bg-black/40" />
+      <div className="absolute inset-0 bg-black/40" />
 
       {/* Content */}
-      <div className="mx-auto max-w-7xl px-6 text-center">
+      <div className="relative z-10 mx-auto max-w-7xl px-6 text-center">
         <h1 className="text-4xl font-bold text-white md:text-6xl">
           Selamat Datang di
           <br />

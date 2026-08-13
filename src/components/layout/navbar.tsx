@@ -4,8 +4,8 @@ import MobileMenu from "./mobile-menu";
 
 export default function Navbar() {
   return (
-    <header className="sticky top-0 z-50 border-b bg-white">
-      <div className="mx-auto max-w-7xl px-6">        
+    <header className="sticky top-0 z-50 border-b border-[#E8E1D5] bg-[#FFFDF7]/95 backdrop-blur-md">
+      <div className="mx-auto max-w-7xl px-6">
         <nav className="flex h-20 items-center justify-between">
           <Link href="/" className="flex items-center">
             <Image
@@ -19,11 +19,50 @@ export default function Navbar() {
           </Link>
 
           <ul className="hidden items-center gap-8 md:flex">
-            <li><a href="#home">Beranda</a></li>
-            <li><a href="#profile">Profil</a></li>
-            <li><a href="#teachers">Guru</a></li>
-            <li><a href="#news">Berita</a></li>
-            <li><a href="#contact">Kontak</a></li>
+            <li>
+              <a
+                href="#home"
+                className="font-semibold text-[#24324A] transition-colors hover:text-[#FF6B6B]"
+              >
+                Beranda
+              </a>
+            </li>
+
+            <li>
+              <a
+                href="#profile"
+                className="font-semibold text-[#24324A] transition-colors hover:text-[#FF6B6B]"
+              >
+                Profil
+              </a>
+            </li>
+
+            <li>
+              <a
+                href="#teachers"
+                className="font-semibold text-[#24324A] transition-colors hover:text-[#FF6B6B]"
+              >
+                Guru
+              </a>
+            </li>
+
+            <li>
+              <a
+                href="#news"
+                className="font-semibold text-[#24324A] transition-colors hover:text-[#FF6B6B]"
+              >
+                Berita
+              </a>
+            </li>
+
+            <li>
+              <a
+                href="#contact"
+                className="font-semibold text-[#24324A] transition-colors hover:text-[#FF6B6B]"
+              >
+                Kontak
+              </a>
+            </li>
           </ul>
 
           <MobileMenu />

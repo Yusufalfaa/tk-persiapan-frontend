@@ -1,8 +1,8 @@
 export default function Footer() {
   return (
-    <footer className="border-t bg-white">
-      <div className="mx-auto flex h-16 max-w-7xl items-center justify-center px-6">
-        <p className="text-sm text-muted-foreground">
+    <footer className="border-t border-[#E8E1D5] bg-[#FFFDF7]">
+      <div className="mx-auto flex h-20 max-w-7xl items-center justify-center px-6">
+        <p className="text-sm text-[#24324A]/55">
           © 2026 TK Persiapan. All rights reserved.
         </p>
       </div>
