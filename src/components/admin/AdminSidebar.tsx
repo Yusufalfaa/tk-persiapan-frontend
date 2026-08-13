@@ -42,7 +42,7 @@ const menuItems = [
         icon: Users,
     },
     {
-        label: "Berita",
+        label: "Pengelolaan Berita",
         href: "/admin/news",
         icon: Newspaper,
     },
