@@ -1,5 +1,4 @@
 import { getSchool } from "@/services/school.service";
-import { Heart, BookOpen, Users } from "lucide-react";
 
 export default async function VisionMissionSection() {
   const response = await getSchool();
@@ -7,50 +6,82 @@ export default async function VisionMissionSection() {
   const school = response;
 
   return (
-    <section className="py-20">
-      <div className="mx-auto max-w-7xl px-6">
+    <section
+      id="visi-misi"
+      className="bg-[#DFF6E3] py-[70px] pb-[76px]"
+    >
+      <div className="mx-auto max-w-[1100px] px-8">
 
-        {/* Vision */}
-        <h2 className="text-center text-3xl font-bold">
-          Visi
-        </h2>
-
-        <div className="mx-auto mt-6 max-w-3xl rounded-2xl border bg-[#FFF8EE] p-8 text-center">
-          <p className="text-muted-foreground">
-            {school.vision}
-          </p>
+        {/* Header */}
+        <div className="mb-2 text-[12px] font-extrabold uppercase tracking-[1.5px] text-[#2E8F47]">
+          Arah & Langkah Kami
         </div>
 
-
-        {/* Mission */}
-        <h2 className="mt-16 text-center text-3xl font-bold">
-          Misi
+        <h2 className="text-[29px] font-bold tracking-[0.2px] text-[#241E3D]">
+          Visi & Misi
         </h2>
 
+        {/* Content */}
+        <div className="mt-5 grid items-start gap-[22px] md:grid-cols-[0.8fr_1.2fr]">
 
-        <div className="mt-8 grid gap-6 md:grid-cols-3">
-          {school.missions.map((mission: any, index: number) => (
-            <div
-              key={mission.id}
-              className="rounded-2xl border p-6 text-center"
-            >
+          {/* Vision */}
+          <div
+            className="
+              h-full
+              rounded-[24px]
+              bg-[#FF6B6B]
+              px-7
+              py-[30px]
+              text-white
+              shadow-[0_16px_30px_rgba(255,107,107,0.28)]
+            "
+          >
+            <h3 className="mb-[10px] text-[18px] font-bold text-white">
+              Visi
+            </h3>
 
-              <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-[#FFF8EE]">
-                {index === 0 && <BookOpen />}
-                {index === 1 && <Heart />}
-                {index === 2 && <Users />}
+            <p className="text-[14px] leading-[1.8] text-white">
+              {school.vision}
+            </p>
+          </div>
+
+          {/* Mission */}
+          <div className="flex flex-col gap-[14px]">
+            {school.missions.map((mission: any, index: number) => (
+              <div
+                key={mission.id}
+                className="
+                  flex
+                  gap-[14px]
+                  rounded-2xl
+                  bg-white
+                  px-[22px]
+                  py-[18px]
+                  text-[13.5px]
+                  leading-[1.7]
+                  text-[#3A3A3A]
+                  shadow-[0_8px_20px_rgba(40,90,50,0.07)]
+                "
+              >
+                <span
+                  className="
+                    shrink-0
+                    text-[18px]
+                    font-bold
+                    text-[#5FCB7A]
+                  "
+                >
+                  {String(index + 1).padStart(2, "0")}
+                </span>
+
+                <p>
+                  {mission.content}
+                </p>
               </div>
+            ))}
+          </div>
 
-
-              <p className="mt-5 text-muted-foreground">
-                {mission.content}
-              </p>
-
-            </div>
-          ))}
         </div>
-
-
       </div>
     </section>
   );

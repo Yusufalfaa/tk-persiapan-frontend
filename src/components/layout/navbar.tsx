@@ -22,7 +22,7 @@ export default function Navbar() {
             <li>
               <a
                 href="#home"
-                className="font-semibold text-[#24324A] transition-colors hover:text-[#FF6B6B]"
+                className="font-semibold text-[#241E3D] transition-colors hover:text-[#FF6B6B]"
               >
                 Beranda
               </a>
@@ -31,7 +31,7 @@ export default function Navbar() {
             <li>
               <a
                 href="#profile"
-                className="font-semibold text-[#24324A] transition-colors hover:text-[#FF6B6B]"
+                className="font-semibold text-[#241E3D] transition-colors hover:text-[#FF6B6B]"
               >
                 Profil
               </a>
@@ -40,7 +40,7 @@ export default function Navbar() {
             <li>
               <a
                 href="#teachers"
-                className="font-semibold text-[#24324A] transition-colors hover:text-[#FF6B6B]"
+                className="font-semibold text-[#241E3D] transition-colors hover:text-[#FF6B6B]"
               >
                 Guru
               </a>
@@ -49,7 +49,7 @@ export default function Navbar() {
             <li>
               <a
                 href="#news"
-                className="font-semibold text-[#24324A] transition-colors hover:text-[#FF6B6B]"
+                className="font-semibold text-[#241E3D] transition-colors hover:text-[#FF6B6B]"
               >
                 Berita
               </a>
@@ -58,7 +58,7 @@ export default function Navbar() {
             <li>
               <a
                 href="#contact"
-                className="font-semibold text-[#24324A] transition-colors hover:text-[#FF6B6B]"
+                className="font-semibold text-[#241E3D] transition-colors hover:text-[#FF6B6B]"
               >
                 Kontak
               </a>

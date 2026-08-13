@@ -22,9 +22,7 @@ function stripHtml(html: string): string {
         .trim();
 }
 
-export default function NewsCard({
-    news,
-}: NewsCardProps) {
+export default function NewsCard({ news }: NewsCardProps) {
     const cleanExcerpt = news.excerpt
         ? stripHtml(news.excerpt)
         : "";
@@ -35,9 +33,11 @@ export default function NewsCard({
                 overflow-hidden
                 rounded-2xl
                 border
+                border-[#6d4fd1]/10
                 bg-white
+                shadow-[0_12px_26px_rgba(90,70,150,0.1)]
                 transition
-                hover:shadow-lg
+                hover:-translate-y-1
             "
         >
             {/* Thumbnail */}
@@ -61,9 +61,9 @@ export default function NewsCard({
                             h-full
                             items-center
                             justify-center
-                            bg-gray-100
+                            bg-[#f3efff]
                             text-sm
-                            text-gray-500
+                            text-[#6d4fd1]/60
                         "
                     >
                         Tidak ada gambar
@@ -74,10 +74,8 @@ export default function NewsCard({
             {/* Content */}
             <div className="p-6">
                 {/* Date */}
-                <p className="text-sm text-muted-foreground">
-                    {new Date(
-                        news.createdAt
-                    ).toLocaleDateString("id-ID")}
+                <p className="text-sm text-black">
+                    {new Date(news.createdAt).toLocaleDateString("id-ID")}
                 </p>
 
                 {/* Title */}
@@ -86,7 +84,8 @@ export default function NewsCard({
                         mt-2
                         line-clamp-2
                         text-xl
-                        font-semibold
+                        font-bold
+                        text-black
                     "
                 >
                     {news.title}
@@ -99,7 +98,7 @@ export default function NewsCard({
                             mt-3
                             line-clamp-3
                             text-sm
-                            text-muted-foreground
+                            text-[#6f6a7d]
                         "
                     >
                         {cleanExcerpt}
@@ -114,6 +113,8 @@ export default function NewsCard({
                         inline-block
                         text-sm
                         font-medium
+                        text-[#FF6B6B]/80
+                        hover:text-black
                         hover:underline
                     "
                 >
