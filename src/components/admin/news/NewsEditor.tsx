@@ -49,9 +49,10 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 
-import {
+import type {
     AdminNewsDetail,
     NewsList,
+    NewsSection,
     NewsSectionType,
 } from "@/types/news";
 
@@ -75,19 +76,27 @@ export default function NewsEditor({
     const [isPublished, setIsPublished] =
         useState<boolean>(true);
 
-    const [loading, setLoading] = useState(true);
-    const [saving, setSaving] = useState(false);
+    const [loading, setLoading] =
+        useState(true);
+
+    const [saving, setSaving] =
+        useState(false);
 
     const [selectedSectionType, setSelectedSectionType] =
         useState<NewsSectionType | null>(null);
 
-    const [deleteSectionId, setDeleteSectionId] = useState<number | null>(null);
+    const [editingSection, setEditingSection] =
+        useState<NewsSection | null>(null);
+
+    const [deleteSectionId, setDeleteSectionId] =
+        useState<number | null>(null);
 
     async function loadNewsDetail() {
         try {
             setLoading(true);
 
-            const response = await getAdminNewsDetail(news.id);
+            const response =
+                await getAdminNewsDetail(news.id);
 
             setDetail(response);
             setTitle(response.title);
@@ -98,86 +107,25 @@ export default function NewsEditor({
                 error
             );
 
-            toast.error("Gagal memuat detail berita", {
-                description: "Data berita tidak dapat dimuat.",
-            });
-        } finally {
-            setLoading(false);
-        }
-    }
-
-    async function handleDeleteSection() {
-        if (deleteSectionId === null) {
-            return;
-        }
-
-        try {
-            setSaving(true);
-
-            await deleteNewsSection(deleteSectionId);
-
-            toast.success("Section berhasil dihapus", {
-                description:
-                    "Section telah dihapus dari berita.",
-            });
-
-            const response =
-                await getAdminNewsDetail(news.id);
-
-            setDetail(response);
-            setDeleteSectionId(null);
-        } catch (error) {
-            console.error(
-                "Failed to delete section:",
-                error
-            );
-
-            toast.error("Gagal menghapus section", {
-                description:
-                    "Terjadi kesalahan saat menghapus section.",
-            });
-        } finally {
-            setSaving(false);
-        }
-    }
-
-    async function handleReorderSection(
-        sectionId: number,
-        direction: "UP" | "DOWN"
-    ) {
-        try {
-            setSaving(true);
-
-            await reorderNewsSection(
-                sectionId,
-                direction
-            );
-
-            const response =
-                await getAdminNewsDetail(news.id);
-
-            setDetail(response);
-        } catch (error) {
-            console.error(
-                "Failed to reorder section:",
-                error
-            );
-
             toast.error(
-                "Gagal memindahkan section",
+                "Gagal memuat detail berita",
                 {
                     description:
-                        "Terjadi kesalahan saat mengubah urutan section.",
+                        "Data berita tidak dapat dimuat.",
                 }
             );
         } finally {
-            setSaving(false);
+            setLoading(false);
         }
     }
 
     useEffect(() => {
         loadNewsDetail();
     }, [news.id]);
+
+    // =========================================================
+    // NEWS
+    // =========================================================
 
     async function handleSubmit(
         event: React.FormEvent<HTMLFormElement>
@@ -227,7 +175,10 @@ export default function NewsEditor({
     function handleSelectSectionType(
         type: NewsSectionType
     ) {
-        if (!detail?.canAddSection) {
+        if (
+            !detail?.canAddSection ||
+            editingSection !== null
+        ) {
             return;
         }
 
@@ -236,6 +187,104 @@ export default function NewsEditor({
 
     function handleCancelSectionForm() {
         setSelectedSectionType(null);
+    }
+
+    function handleEditSection(
+        section: NewsSection
+    ) {
+        if (saving || editingSection !== null) {
+            return;
+        }
+
+        setSelectedSectionType(null);
+        setEditingSection(section);
+    }
+
+    function handleCancelEditSection() {
+        setEditingSection(null);
+    }
+
+    async function handleSectionSuccess() {
+        setEditingSection(null);
+        setSelectedSectionType(null);
+
+        await loadNewsDetail();
+    }
+
+    async function handleDeleteSection() {
+        if (deleteSectionId === null) {
+            return;
+        }
+
+        try {
+            setSaving(true);
+
+            await deleteNewsSection(
+                deleteSectionId
+            );
+
+            toast.success(
+                "Section berhasil dihapus",
+                {
+                    description:
+                        "Section telah dihapus dari berita.",
+                }
+            );
+
+            setDeleteSectionId(null);
+
+            await loadNewsDetail();
+        } catch (error) {
+            console.error(
+                "Failed to delete section:",
+                error
+            );
+
+            toast.error(
+                "Gagal menghapus section",
+                {
+                    description:
+                        "Terjadi kesalahan saat menghapus section.",
+                }
+            );
+        } finally {
+            setSaving(false);
+        }
+    }
+
+    async function handleReorderSection(
+        sectionId: number,
+        direction: "UP" | "DOWN"
+    ) {
+        if (editingSection !== null) {
+            return;
+        }
+
+        try {
+            setSaving(true);
+
+            await reorderNewsSection(
+                sectionId,
+                direction
+            );
+
+            await loadNewsDetail();
+        } catch (error) {
+            console.error(
+                "Failed to reorder section:",
+                error
+            );
+
+            toast.error(
+                "Gagal memindahkan section",
+                {
+                    description:
+                        "Terjadi kesalahan saat mengubah urutan section.",
+                }
+            );
+        } finally {
+            setSaving(false);
+        }
     }
 
     if (loading) {
@@ -275,9 +324,6 @@ export default function NewsEditor({
 
     return (
         <div className="space-y-6">
-            {/* ================================================= */}
-            {/* NEWS INFORMATION */}
-            {/* ================================================= */}
 
             <Card className="border-0 bg-[#FFFDF7]">
                 <CardHeader>
@@ -291,7 +337,7 @@ export default function NewsEditor({
                         onSubmit={handleSubmit}
                         className="space-y-6"
                     >
-                        {/* Title */}
+                        {/* TITLE */}
                         <div className="space-y-2">
                             <Label htmlFor="news-title">
                                 Judul Berita
@@ -311,7 +357,7 @@ export default function NewsEditor({
                             />
                         </div>
 
-                        {/* Status */}
+                        {/* STATUS */}
                         <div className="space-y-2">
                             <Label htmlFor="news-status">
                                 Status
@@ -355,7 +401,7 @@ export default function NewsEditor({
                             </p>
                         </div>
 
-                        {/* Author */}
+                        {/* AUTHOR */}
                         <div className="space-y-1">
                             <p className="text-sm text-black/40">
                                 Author
@@ -367,7 +413,7 @@ export default function NewsEditor({
                             </p>
                         </div>
 
-                        {/* Action */}
+                        {/* ACTION */}
                         <div className="flex justify-end gap-3 border-t border-black/10 pt-6">
                             <Button
                                 type="button"
@@ -393,10 +439,6 @@ export default function NewsEditor({
                 </CardContent>
             </Card>
 
-            {/* ================================================= */}
-            {/* SECTIONS */}
-            {/* ================================================= */}
-
             <Card className="border-0 bg-[#FFFDF7]">
                 <CardHeader className="flex flex-row items-center justify-between">
                     <div>
@@ -417,309 +459,394 @@ export default function NewsEditor({
 
                 <CardContent>
                     <div className="space-y-4">
-                        {/* Existing Sections */}
+
                         {detail.sections.map(
-                            (section, index) => (
-                                <div
-                                    key={section.id}
-                                    className="rounded-xl border border-black/10 bg-white p-5"
-                                >
-                                    {/* Section Header */}
-                                    <div className="flex items-start justify-between gap-4">
-                                        <div className="flex items-center gap-3">
-                                            <div className="flex size-9 items-center justify-center rounded-lg bg-[#F5F2EC] text-sm font-semibold text-black/60">
-                                                {index + 1}
+                            (section, index) => {
+
+                                const isEditing =
+                                    editingSection?.id ===
+                                    section.id;
+
+                                return (
+                                    <div
+                                        key={section.id}
+                                    >
+                                        {isEditing ? (
+                                            <NewsSectionForm
+                                                newsId={
+                                                    news.id
+                                                }
+                                                initialType={
+                                                    section.type
+                                                }
+                                                section={
+                                                    section
+                                                }
+                                                onCancel={
+                                                    handleCancelEditSection
+                                                }
+                                                onSuccess={
+                                                    handleSectionSuccess
+                                                }
+                                            />
+                                        ) : (
+                                            <div className="rounded-xl border border-black/10 bg-white p-5">
+
+                                                {/* SECTION HEADER */}
+                                                <div className="flex items-start justify-between gap-4">
+
+                                                    <div className="flex items-center gap-3">
+
+                                                        <div className="flex size-9 items-center justify-center rounded-lg bg-[#F5F2EC] text-sm font-semibold text-black/60">
+                                                            {index + 1}
+                                                        </div>
+
+                                                        <div>
+                                                            <p className="font-semibold text-black">
+                                                                Section{" "}
+                                                                {index +
+                                                                    1}
+                                                            </p>
+
+                                                            <p className="mt-1 text-xs font-medium uppercase tracking-wide text-black/40">
+                                                                {
+                                                                    section.type
+                                                                }
+                                                            </p>
+                                                        </div>
+
+                                                    </div>
+
+                                                    {/* SECTION ACTIONS */}
+                                                    <div className="flex items-center gap-1">
+                                                        <Button
+                                                            type="button"
+                                                            variant="ghost"
+                                                            size="icon"
+                                                            disabled={
+                                                                saving ||
+                                                                editingSection !==
+                                                                    null ||
+                                                                index ===
+                                                                    0
+                                                            }
+                                                            onClick={() =>
+                                                                handleReorderSection(
+                                                                    section.id,
+                                                                    "UP"
+                                                                )
+                                                            }
+                                                            className="size-8 cursor-pointer text-black/40 hover:bg-[#F5F2EC] hover:text-black disabled:cursor-not-allowed disabled:opacity-30"
+                                                        >
+                                                            <ArrowUp className="size-4" />
+
+                                                            <span className="sr-only">
+                                                                Pindahkan ke atas
+                                                            </span>
+                                                        </Button>
+
+                                                        <Button
+                                                            type="button"
+                                                            variant="ghost"
+                                                            size="icon"
+                                                            disabled={
+                                                                saving ||
+                                                                editingSection !==
+                                                                    null ||
+                                                                index ===
+                                                                    detail
+                                                                        .sections
+                                                                        .length -
+                                                                        1
+                                                            }
+                                                            onClick={() =>
+                                                                handleReorderSection(
+                                                                    section.id,
+                                                                    "DOWN"
+                                                                )
+                                                            }
+                                                            className="size-8 cursor-pointer text-black/40 hover:bg-[#F5F2EC] hover:text-black disabled:cursor-not-allowed disabled:opacity-30"
+                                                        >
+                                                            <ArrowDown className="size-4" />
+
+                                                            <span className="sr-only">
+                                                                Pindahkan ke bawah
+                                                            </span>
+                                                        </Button>
+
+                                                        <Button
+                                                            type="button"
+                                                            variant="ghost"
+                                                            size="icon"
+                                                            disabled={
+                                                                saving ||
+                                                                editingSection !==
+                                                                    null
+                                                            }
+                                                            onClick={() =>
+                                                                handleEditSection(
+                                                                    section
+                                                                )
+                                                            }
+                                                            className="size-8 cursor-pointer text-black/40 hover:bg-[#FF6B6B]/10 hover:text-[#FF6B6B] disabled:cursor-not-allowed disabled:opacity-30"
+                                                        >
+                                                            <Pencil className="size-4" />
+
+                                                            <span className="sr-only">
+                                                                Edit section
+                                                            </span>
+                                                        </Button>
+
+                                                        <Button
+                                                            type="button"
+                                                            variant="ghost"
+                                                            size="icon"
+                                                            disabled={
+                                                                saving ||
+                                                                editingSection !==
+                                                                    null
+                                                            }
+                                                            onClick={() =>
+                                                                setDeleteSectionId(
+                                                                    section.id
+                                                                )
+                                                            }
+                                                            className="size-8 cursor-pointer text-black/40 hover:bg-red-50 hover:text-red-500 disabled:cursor-not-allowed disabled:opacity-30"
+                                                        >
+                                                            <Trash2 className="size-4" />
+
+                                                            <span className="sr-only">
+                                                                Hapus section
+                                                            </span>
+                                                        </Button>
+
+                                                    </div>
+                                                </div>
+
+                                                {section.type ===
+                                                    "TEXT" && (
+                                                    <div className="mt-4 rounded-lg bg-[#F5F2EC] p-4">
+
+                                                        {section.text ? (
+                                                            <div
+                                                                className="
+                                                                    text-sm
+                                                                    leading-relaxed
+                                                                    text-black/70
+
+                                                                    [&_p]:mb-3
+                                                                    [&_p:last-child]:mb-0
+
+                                                                    [&_strong]:font-semibold
+                                                                    [&_em]:italic
+                                                                    [&_u]:underline
+
+                                                                    [&_ul]:my-3
+                                                                    [&_ul]:ml-5
+                                                                    [&_ul]:list-disc
+
+                                                                    [&_ol]:my-3
+                                                                    [&_ol]:ml-5
+                                                                    [&_ol]:list-decimal
+
+                                                                    [&_li]:mb-1
+                                                                "
+                                                                dangerouslySetInnerHTML={{
+                                                                    __html:
+                                                                        section.text,
+                                                                }}
+                                                            />
+                                                        ) : (
+                                                            <p className="text-sm text-black/40">
+                                                                -
+                                                            </p>
+                                                        )}
+
+                                                    </div>
+                                                )}
+
+                                                {section.type ===
+                                                    "IMAGE" && (
+                                                    <div className="mt-4">
+
+                                                        {section.imageUrl ? (
+                                                            <img
+                                                                src={
+                                                                    section.imageUrl
+                                                                }
+                                                                alt={`Section ${
+                                                                    index +
+                                                                    1
+                                                                }`}
+                                                                className="max-h-72 rounded-lg object-cover"
+                                                            />
+                                                        ) : (
+                                                            <div className="flex h-40 items-center justify-center rounded-lg bg-[#F5F2EC] text-sm text-black/40">
+                                                                Tidak ada
+                                                                gambar.
+                                                            </div>
+                                                        )}
+
+                                                    </div>
+                                                )}
+
+                                                {section.type ===
+                                                    "YOUTUBE" && (
+                                                    <div className="mt-4 rounded-lg bg-[#F5F2EC] p-4">
+
+                                                        <p className="break-all text-sm text-black/70">
+                                                            {section.youtubeUrl ||
+                                                                "-"}
+                                                        </p>
+
+                                                    </div>
+                                                )}
+
                                             </div>
+                                        )}
+                                    </div>
+                                );
+                            }
+                        )}
 
-                                            <div>
-                                                <p className="font-semibold text-black">
-                                                    Section{" "}
-                                                    {index + 1}
-                                                </p>
+                        {!editingSection &&
+                            (selectedSectionType ? (
+                                <NewsSectionForm
+                                    newsId={news.id}
+                                    initialType={
+                                        selectedSectionType
+                                    }
+                                    onCancel={
+                                        handleCancelSectionForm
+                                    }
+                                    onSuccess={
+                                        handleSectionSuccess
+                                    }
+                                />
+                            ) : (
+                                <div className="rounded-xl border border-dashed border-black/15 bg-[#F5F2EC]/50 p-5">
 
-                                                <p className="mt-1 text-xs font-medium uppercase tracking-wide text-black/40">
-                                                    {section.type}
-                                                </p>
-                                            </div>
-                                        </div>
+                                    <div className="text-center">
+                                        <p className="font-semibold text-black">
+                                            Tambah Section
+                                        </p>
 
-                                        {/* Section Actions */}
-                                        <div className="flex items-center gap-1">
-                                            <Button
-                                                type="button"
-                                                variant="ghost"
-                                                size="icon"
-                                                disabled={saving || index === 0}
-                                                onClick={() =>
-                                                    handleReorderSection(
-                                                        section.id,
-                                                        "UP"
-                                                    )
-                                                }
-                                                className="size-8 cursor-pointer text-black/40 hover:bg-[#F5F2EC] hover:text-black disabled:cursor-not-allowed disabled:opacity-30"
-                                            >
-                                                <ArrowUp className="size-4" />
-
-                                                <span className="sr-only">
-                                                    Pindahkan ke atas
-                                                </span>
-                                            </Button>
-
-                                            <Button
-                                                type="button"
-                                                variant="ghost"
-                                                size="icon"
-                                                disabled={
-                                                    saving ||
-                                                    index === detail.sections.length - 1
-                                                }
-                                                onClick={() =>
-                                                    handleReorderSection(
-                                                        section.id,
-                                                        "DOWN"
-                                                    )
-                                                }
-                                                className="size-8 cursor-pointer text-black/40 hover:bg-[#F5F2EC] hover:text-black disabled:cursor-not-allowed disabled:opacity-30"
-                                            >
-                                                <ArrowDown className="size-4" />
-
-                                                <span className="sr-only">
-                                                    Pindahkan ke bawah
-                                                </span>
-                                            </Button>
-
-                                            <Button
-                                                type="button"
-                                                variant="ghost"
-                                                size="icon"
-                                                className="size-8 cursor-pointer text-black/40 hover:bg-[#FF6B6B]/10 hover:text-[#FF6B6B]"
-                                            >
-                                                <Pencil className="size-4" />
-
-                                                <span className="sr-only">
-                                                    Edit section
-                                                </span>
-                                            </Button>
-
-                                            <Button
-                                                type="button"
-                                                variant="ghost"
-                                                size="icon"
-                                                disabled={saving}
-                                                onClick={() =>
-                                                    setDeleteSectionId(section.id)
-                                                }
-                                                className="size-8 cursor-pointer text-black/40 hover:bg-red-50 hover:text-red-500"
-                                            >
-                                                <Trash2 className="size-4" />
-
-                                                <span className="sr-only">
-                                                    Hapus section
-                                                </span>
-                                            </Button>
-                                        </div>
+                                        <p className="mt-1 text-sm text-black/40">
+                                            Pilih tipe section
+                                            yang ingin
+                                            ditambahkan.
+                                        </p>
                                     </div>
 
-                                    {/* TEXT */}
-                                    {section.type === "TEXT" && (
-                                        <div className="mt-4 rounded-lg bg-[#F5F2EC] p-4">
-                                            {section.text ? (
-                                                <div
-                                                    className="
-                                                        text-sm
-                                                        leading-relaxed
-                                                        text-black/70
+                                    <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-3">
 
-                                                        [&_p]:mb-3
-                                                        [&_p:last-child]:mb-0
+                                        {/* TEXT */}
 
-                                                        [&_strong]:font-semibold
-                                                        [&_em]:italic
-                                                        [&_u]:underline
+                                        <Button
+                                            type="button"
+                                            variant="outline"
+                                            disabled={
+                                                !detail.canAddSection
+                                            }
+                                            onClick={() =>
+                                                handleSelectSectionType(
+                                                    "TEXT"
+                                                )
+                                            }
+                                            className="h-auto cursor-pointer flex-col gap-1.5 border-black/10 bg-white px-4 py-3 hover:bg-[#F5F2EC]"
+                                        >
+                                            <Type className="size-5 text-[#FF6B6B]" />
 
-                                                        [&_ul]:my-3
-                                                        [&_ul]:ml-5
-                                                        [&_ul]:list-disc
+                                            <span className="text-sm font-medium text-black">
+                                                Text
+                                            </span>
 
-                                                        [&_ol]:my-3
-                                                        [&_ol]:ml-5
-                                                        [&_ol]:list-decimal
+                                            <span className="text-[11px] font-normal text-black/40">
+                                                Teks berita
+                                            </span>
+                                        </Button>
 
-                                                        [&_li]:mb-1
-                                                    "
-                                                    dangerouslySetInnerHTML={{
-                                                        __html: section.text,
-                                                    }}
-                                                />
-                                            ) : (
-                                                <p className="text-sm text-black/40">
-                                                    -
-                                                </p>
-                                            )}
-                                        </div>
+                                        {/* IMAGE */}
+
+                                        <Button
+                                            type="button"
+                                            variant="outline"
+                                            disabled={
+                                                !detail.canAddSection
+                                            }
+                                            onClick={() =>
+                                                handleSelectSectionType(
+                                                    "IMAGE"
+                                                )
+                                            }
+                                            className="h-auto cursor-pointer flex-col gap-1.5 border-black/10 bg-white px-4 py-3 hover:bg-[#F5F2EC]"
+                                        >
+                                            <ImagePlus className="size-5 text-[#FF6B6B]" />
+
+                                            <span className="text-sm font-medium text-black">
+                                                Image
+                                            </span>
+
+                                            <span className="text-[11px] font-normal text-black/40">
+                                                Gambar berita
+                                            </span>
+                                        </Button>
+
+                                        {/* YOUTUBE */}
+
+                                        <Button
+                                            type="button"
+                                            variant="outline"
+                                            disabled={
+                                                !detail.canAddSection
+                                            }
+                                            onClick={() =>
+                                                handleSelectSectionType(
+                                                    "YOUTUBE"
+                                                )
+                                            }
+                                            className="h-auto cursor-pointer flex-col gap-1.5 border-black/10 bg-white px-4 py-3 hover:bg-[#F5F2EC]"
+                                        >
+                                            <Link className="size-5 text-[#FF6B6B]" />
+
+                                            <span className="text-sm font-medium text-black">
+                                                URL
+                                            </span>
+
+                                            <span className="text-[11px] font-normal text-black/40">
+                                                Video YouTube
+                                            </span>
+                                        </Button>
+
+                                    </div>
+
+                                    {!detail.canAddSection && (
+                                        <p className="mt-4 text-center text-xs text-black/40">
+                                            Jumlah section sudah
+                                            mencapai batas
+                                            maksimum.
+                                        </p>
                                     )}
 
-                                    {/* IMAGE */}
-                                    {section.type ===
-                                        "IMAGE" && (
-                                        <div className="mt-4">
-                                            {section.imageUrl ? (
-                                                <img
-                                                    src={
-                                                        section.imageUrl
-                                                    }
-                                                    alt={`Section ${
-                                                        index +
-                                                        1
-                                                    }`}
-                                                    className="max-h-72 rounded-lg object-cover"
-                                                />
-                                            ) : (
-                                                <div className="flex h-40 items-center justify-center rounded-lg bg-[#F5F2EC] text-sm text-black/40">
-                                                    Tidak ada
-                                                    gambar.
-                                                </div>
-                                            )}
-                                        </div>
-                                    )}
-
-                                    {/* YOUTUBE */}
-                                    {section.type ===
-                                        "YOUTUBE" && (
-                                        <div className="mt-4 rounded-lg bg-[#F5F2EC] p-4">
-                                            <p className="break-all text-sm text-black/70">
-                                                {section.youtubeUrl ||
-                                                    "-"}
-                                            </p>
-                                        </div>
-                                    )}
                                 </div>
-                            )
-                        )}
+                            ))}
 
-                        {/* ================================================= */}
-                        {/* ADD SECTION */}
-                        {/* ================================================= */}
-
-                        {!selectedSectionType ? (
-                            <div className="rounded-xl border border-dashed border-black/15 bg-[#F5F2EC]/50 p-5">
-                                <div className="text-center">
-                                    <p className="font-semibold text-black">
-                                        Tambah Section
-                                    </p>
-
-                                    <p className="mt-1 text-sm text-black/40">
-                                        Pilih tipe section
-                                        yang ingin
-                                        ditambahkan.
-                                    </p>
-                                </div>
-
-                                <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-3">
-                                    {/* TEXT */}
-                                    <Button
-                                        type="button"
-                                        variant="outline"
-                                        disabled={
-                                            !detail.canAddSection
-                                        }
-                                        onClick={() =>
-                                            handleSelectSectionType(
-                                                "TEXT"
-                                            )
-                                        }
-                                        className="h-auto cursor-pointer flex-col gap-1.5 border-black/10 bg-white px-4 py-3 hover:bg-[#F5F2EC]"
-                                    >
-                                        <Type className="size-5 text-[#FF6B6B]" />
-
-                                        <span className="text-sm font-medium text-black">
-                                            Text
-                                        </span>
-
-                                        <span className="text-[11px] font-normal text-black/40">
-                                            Teks berita
-                                        </span>
-                                    </Button>
-
-                                    {/* IMAGE */}
-                                    <Button
-                                        type="button"
-                                        variant="outline"
-                                        disabled={
-                                            !detail.canAddSection
-                                        }
-                                        onClick={() =>
-                                            handleSelectSectionType(
-                                                "IMAGE"
-                                            )
-                                        }
-                                        className="h-auto cursor-pointer flex-col gap-1.5 border-black/10 bg-white px-4 py-3 hover:bg-[#F5F2EC]"
-                                    >
-                                        <ImagePlus className="size-5 text-[#FF6B6B]" />
-
-                                        <span className="text-sm font-medium text-black">
-                                            Image
-                                        </span>
-
-                                        <span className="text-[11px] font-normal text-black/40">
-                                            Gambar berita
-                                        </span>
-                                    </Button>
-
-                                    {/* YOUTUBE */}
-                                    <Button
-                                        type="button"
-                                        variant="outline"
-                                        disabled={
-                                            !detail.canAddSection
-                                        }
-                                        onClick={() =>
-                                            handleSelectSectionType(
-                                                "YOUTUBE"
-                                            )
-                                        }
-                                        className="h-auto cursor-pointer flex-col gap-1.5 border-black/10 bg-white px-4 py-3 hover:bg-[#F5F2EC]"
-                                    >
-                                        <Link className="size-5 text-[#FF6B6B]" />
-
-                                        <span className="text-sm font-medium text-black">
-                                            URL
-                                        </span>
-
-                                        <span className="text-[11px] font-normal text-black/40">
-                                            Video YouTube
-                                        </span>
-                                    </Button>
-                                </div>
-
-                                {!detail.canAddSection && (
-                                    <p className="mt-4 text-center text-xs text-black/40">
-                                        Jumlah section sudah
-                                        mencapai batas
-                                        maksimum.
-                                    </p>
-                                )}
-                            </div>
-                        ) : (
-                            <NewsSectionForm
-                                newsId={news.id}
-                                initialType={selectedSectionType}
-                                onCancel={handleCancelSectionForm}
-                                onSuccess={async () => {
-                                    setSelectedSectionType(null);
-                                    await loadNewsDetail();
-                                }}
-                            />
-                        )}
                     </div>
                 </CardContent>
             </Card>
 
             <AlertDialog
-                open={deleteSectionId !== null}
+                open={
+                    deleteSectionId !== null
+                }
                 onOpenChange={(open) => {
-                    if (!open && !saving) {
-                        setDeleteSectionId(null);
+                    if (
+                        !open &&
+                        !saving
+                    ) {
+                        setDeleteSectionId(
+                            null
+                        );
                     }
                 }}
             >
@@ -730,9 +857,11 @@ export default function NewsEditor({
                         </AlertDialogTitle>
 
                         <AlertDialogDescription className="text-black/60">
-                            Apakah kamu yakin ingin menghapus section
-                            ini? Data section yang sudah dihapus tidak
-                            dapat dikembalikan.
+                            Apakah kamu yakin ingin
+                            menghapus section ini?
+                            Data section yang sudah
+                            dihapus tidak dapat
+                            dikembalikan.
                         </AlertDialogDescription>
                     </AlertDialogHeader>
 
@@ -749,10 +878,13 @@ export default function NewsEditor({
                             className="cursor-pointer bg-[#FF6B6B]/80 text-white hover:bg-[#FF6B6B]"
                             onClick={(event) => {
                                 event.preventDefault();
+
                                 handleDeleteSection();
                             }}
                         >
-                            {saving ? "Menghapus..." : "Yes"}
+                            {saving
+                                ? "Menghapus..."
+                                : "Yes"}
                         </AlertDialogAction>
                     </AlertDialogFooter>
                 </AlertDialogContent>

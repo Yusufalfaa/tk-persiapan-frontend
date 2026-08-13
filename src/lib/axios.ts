@@ -6,14 +6,43 @@ const api = axios.create({
 
 api.interceptors.request.use((config) => {
     if (typeof window !== "undefined") {
-        const token = localStorage.getItem("accessToken");
+        const token =
+            localStorage.getItem("accessToken");
 
         if (token) {
-            config.headers.Authorization = `Bearer ${token}`;
+            config.headers.Authorization =
+                `Bearer ${token}`;
         }
     }
 
     return config;
 });
+
+api.interceptors.response.use(
+    (response) => response,
+    (error) => {
+        if (
+            error.response?.status === 401 &&
+            typeof window !== "undefined"
+        ) {
+            localStorage.removeItem(
+                "accessToken"
+            );
+
+            if (
+                window.location.pathname.startsWith(
+                    "/admin"
+                ) &&
+                window.location.pathname !==
+                    "/admin/login"
+            ) {
+                window.location.href =
+                    "/admin/login";
+            }
+        }
+
+        return Promise.reject(error);
+    }
+);
 
 export default api;

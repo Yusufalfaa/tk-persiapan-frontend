@@ -8,11 +8,15 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 
-import { createNewsSection } from "@/services/news.service";
+import {
+    createNewsSection,
+    updateNewsSection,
+} from "@/services/news.service";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+
 import {
     Card,
     CardContent,
@@ -20,12 +24,17 @@ import {
     CardTitle,
 } from "@/components/ui/card";
 
-import type { NewsSectionType } from "@/types/news";
+import type {
+    NewsSection,
+    NewsSectionType,
+} from "@/types/news";
+
 import RichTextEditor from "../../news/RichTextEditor";
 
 interface Props {
     newsId: number;
     initialType: NewsSectionType;
+    section?: NewsSection;
     onCancel: () => void;
     onSuccess: () => void;
 }
@@ -33,36 +42,62 @@ interface Props {
 export default function NewsSectionForm({
     newsId,
     initialType,
+    section,
     onCancel,
     onSuccess,
 }: Props) {
-    const [type, setType] = useState<NewsSectionType>(initialType);
-    const [text, setText] = useState("");
-    const [youtubeUrl, setYoutubeUrl] = useState("");
+    const isEdit = !!section;
+
+    /*
+     * Saat edit:
+     * type dikunci dari section.type
+     *
+     * Saat create:
+     * type berasal dari initialType dan bisa diganti.
+     */
+    const [type, setType] =
+        useState<NewsSectionType>(
+            section?.type ?? initialType
+        );
+
+    const [text, setText] = useState(
+        section?.text ?? ""
+    );
+
+    const [youtubeUrl, setYoutubeUrl] =
+        useState(
+            section?.youtubeUrl ?? ""
+        );
 
     const [image, setImage] =
         useState<File | undefined>();
 
     const [preview, setPreview] =
-        useState<string | null>(null);
+        useState<string | null>(
+            section?.imageUrl ?? null
+        );
 
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] =
+        useState(false);
 
     function handleImageChange(
         event: React.ChangeEvent<HTMLInputElement>
     ) {
-        const file = event.target.files?.[0];
+        const file =
+            event.target.files?.[0];
 
         if (!file) {
             return;
         }
 
-        // Maksimal 2 MB
         if (file.size > 2 * 1024 * 1024) {
-            toast.error("Ukuran gambar terlalu besar", {
-                description:
-                    "Ukuran gambar maksimal 2 MB.",
-            });
+            toast.error(
+                "Ukuran gambar terlalu besar",
+                {
+                    description:
+                        "Ukuran gambar maksimal 2 MB.",
+                }
+            );
 
             event.target.value = "";
             return;
@@ -76,9 +111,19 @@ export default function NewsSectionForm({
         setPreview(previewUrl);
     }
 
+    /*
+     * Fungsi ini hanya dipakai saat CREATE.
+     *
+     * Saat EDIT fungsi ini tidak mungkin dipanggil
+     * karena tombol type tidak dirender.
+     */
     function handleTypeChange(
         newType: NewsSectionType
     ) {
+        if (isEdit) {
+            return;
+        }
+
         setType(newType);
 
         setText("");
@@ -92,63 +137,147 @@ export default function NewsSectionForm({
     ) {
         event.preventDefault();
 
-        if (type === "TEXT" && !text.trim()) {
-            toast.error("Isi section belum diisi");
+        /*
+         * Validasi TEXT
+         */
+        if (
+            type === "TEXT" &&
+            !text
+                .replace(/<[^>]*>/g, "")
+                .trim()
+        ) {
+            toast.error(
+                "Isi section belum diisi"
+            );
             return;
         }
 
+        /*
+         * Validasi YOUTUBE
+         */
         if (
             type === "YOUTUBE" &&
             !youtubeUrl.trim()
         ) {
-            toast.error("URL YouTube belum diisi");
+            toast.error(
+                "URL YouTube belum diisi"
+            );
             return;
         }
 
-        if (type === "IMAGE" && !image) {
-            toast.error("Gambar belum dipilih");
+        /*
+         * Validasi IMAGE
+         *
+         * Saat create:
+         * wajib ada image.
+         *
+         * Saat edit:
+         * boleh menggunakan image lama.
+         */
+        if (
+            type === "IMAGE" &&
+            !image &&
+            !section?.imageUrl
+        ) {
+            toast.error(
+                "Gambar belum dipilih"
+            );
             return;
         }
 
         try {
             setLoading(true);
 
-            await createNewsSection(newsId, {
-                type,
+            /*
+             * ============================================
+             * EDIT
+             * ============================================
+             *
+             * Type sengaja TIDAK dikirim.
+             *
+             * Karena type section tidak boleh berubah
+             * saat editing.
+             */
+            if (isEdit && section) {
+                await updateNewsSection(
+                    section.id,
+                    {
+                        text:
+                            type === "TEXT"
+                                ? text.trim()
+                                : undefined,
 
-                text:
-                    type === "TEXT"
-                        ? text.trim()
-                        : undefined,
+                        youtubeUrl:
+                            type === "YOUTUBE"
+                                ? youtubeUrl.trim()
+                                : undefined,
 
-                youtubeUrl:
-                    type === "YOUTUBE"
-                        ? youtubeUrl.trim()
-                        : undefined,
+                        image:
+                            type === "IMAGE"
+                                ? image
+                                : undefined,
+                    }
+                );
 
-                image:
-                    type === "IMAGE"
-                        ? image
-                        : undefined,
-            });
+                toast.success(
+                    "Section berhasil diperbarui",
+                    {
+                        description:
+                            "Perubahan section berhasil disimpan.",
+                    }
+                );
+            }
 
-            toast.success(
-                "Section berhasil ditambahkan",
-                {
-                    description:
-                        "Section berhasil disimpan ke berita.",
-                }
-            );
+            /*
+             * ============================================
+             * CREATE
+             * ============================================
+             */
+            else {
+                await createNewsSection(
+                    newsId,
+                    {
+                        type,
+
+                        text:
+                            type === "TEXT"
+                                ? text.trim()
+                                : undefined,
+
+                        youtubeUrl:
+                            type === "YOUTUBE"
+                                ? youtubeUrl.trim()
+                                : undefined,
+
+                        image:
+                            type === "IMAGE"
+                                ? image
+                                : undefined,
+                    }
+                );
+
+                toast.success(
+                    "Section berhasil ditambahkan",
+                    {
+                        description:
+                            "Section berhasil disimpan ke berita.",
+                    }
+                );
+            }
 
             onSuccess();
         } catch (error) {
             console.error(
-                "Failed to create section:",
+                isEdit
+                    ? "Failed to update section:"
+                    : "Failed to create section:",
                 error
             );
 
             toast.error(
-                "Gagal menambahkan section",
+                isEdit
+                    ? "Gagal memperbarui section"
+                    : "Gagal menambahkan section",
                 {
                     description:
                         "Terjadi kesalahan saat menyimpan section.",
@@ -163,7 +292,9 @@ export default function NewsSectionForm({
         <Card className="border-0 bg-[#FFFDF7]">
             <CardHeader>
                 <CardTitle className="text-xl font-semibold text-black">
-                    Tambah Section
+                    {isEdit
+                        ? "Edit Section"
+                        : "Tambah Section"}
                 </CardTitle>
             </CardHeader>
 
@@ -172,85 +303,96 @@ export default function NewsSectionForm({
                     onSubmit={handleSubmit}
                     className="space-y-6"
                 >
-                    {/* Tipe Section */}
-                    <div className="space-y-2">
-                        <Label>
-                            Tipe Section
-                        </Label>
+                    {/* ================================================= */}
+                    {/* TYPE - CREATE ONLY */}
+                    {/* ================================================= */}
 
-                        <div className="grid grid-cols-3 gap-3">
-                            {/* TEXT */}
-                            <button
-                                type="button"
-                                disabled={loading}
-                                onClick={() =>
-                                    handleTypeChange(
-                                        "TEXT"
-                                    )
-                                }
-                                className={`flex cursor-pointer flex-col items-center justify-center gap-2 rounded-lg border p-4 transition-colors ${
-                                    type === "TEXT"
-                                        ? "border-[#FF6B6B] bg-[#FF6B6B]/10 text-[#FF6B6B]"
-                                        : "border-black/10 bg-white text-black/50 hover:bg-[#F5F2EC]"
-                                }`}
-                            >
-                                <Type className="size-5" />
+                    {!isEdit && (
+                        <div className="space-y-2">
+                            <Label>
+                                Tipe Section
+                            </Label>
 
-                                <span className="text-sm font-medium">
-                                    Text
-                                </span>
-                            </button>
+                            <div className="grid grid-cols-3 gap-3">
+                                {/* TEXT */}
 
-                            {/* IMAGE */}
-                            <button
-                                type="button"
-                                disabled={loading}
-                                onClick={() =>
-                                    handleTypeChange(
-                                        "IMAGE"
-                                    )
-                                }
-                                className={`flex cursor-pointer flex-col items-center justify-center gap-2 rounded-lg border p-4 transition-colors ${
-                                    type === "IMAGE"
-                                        ? "border-[#FF6B6B] bg-[#FF6B6B]/10 text-[#FF6B6B]"
-                                        : "border-black/10 bg-white text-black/50 hover:bg-[#F5F2EC]"
-                                }`}
-                            >
-                                <ImagePlus className="size-5" />
+                                <button
+                                    type="button"
+                                    disabled={loading}
+                                    onClick={() =>
+                                        handleTypeChange(
+                                            "TEXT"
+                                        )
+                                    }
+                                    className={`flex cursor-pointer flex-col items-center justify-center gap-2 rounded-lg border p-4 transition-colors ${
+                                        type === "TEXT"
+                                            ? "border-[#FF6B6B] bg-[#FF6B6B]/10 text-[#FF6B6B]"
+                                            : "border-black/10 bg-white text-black/50 hover:bg-[#F5F2EC]"
+                                    }`}
+                                >
+                                    <Type className="size-5" />
 
-                                <span className="text-sm font-medium">
-                                    Image
-                                </span>
-                            </button>
+                                    <span className="text-sm font-medium">
+                                        Text
+                                    </span>
+                                </button>
 
-                            {/* YOUTUBE */}
-                            <button
-                                type="button"
-                                disabled={loading}
-                                onClick={() =>
-                                    handleTypeChange(
-                                        "YOUTUBE"
-                                    )
-                                }
-                                className={`flex cursor-pointer flex-col items-center justify-center gap-2 rounded-lg border p-4 transition-colors ${
-                                    type === "YOUTUBE"
-                                        ? "border-[#FF6B6B] bg-[#FF6B6B]/10 text-[#FF6B6B]"
-                                        : "border-black/10 bg-white text-black/50 hover:bg-[#F5F2EC]"
-                                }`}
-                            >
-                                <LinkIcon className="size-5" />
+                                {/* IMAGE */}
 
-                                <span className="text-sm font-medium">
-                                    URL
-                                </span>
-                            </button>
+                                <button
+                                    type="button"
+                                    disabled={loading}
+                                    onClick={() =>
+                                        handleTypeChange(
+                                            "IMAGE"
+                                        )
+                                    }
+                                    className={`flex cursor-pointer flex-col items-center justify-center gap-2 rounded-lg border p-4 transition-colors ${
+                                        type === "IMAGE"
+                                            ? "border-[#FF6B6B] bg-[#FF6B6B]/10 text-[#FF6B6B]"
+                                            : "border-black/10 bg-white text-black/50 hover:bg-[#F5F2EC]"
+                                    }`}
+                                >
+                                    <ImagePlus className="size-5" />
+
+                                    <span className="text-sm font-medium">
+                                        Image
+                                    </span>
+                                </button>
+
+                                {/* YOUTUBE */}
+
+                                <button
+                                    type="button"
+                                    disabled={loading}
+                                    onClick={() =>
+                                        handleTypeChange(
+                                            "YOUTUBE"
+                                        )
+                                    }
+                                    className={`flex cursor-pointer flex-col items-center justify-center gap-2 rounded-lg border p-4 transition-colors ${
+                                        type === "YOUTUBE"
+                                            ? "border-[#FF6B6B] bg-[#FF6B6B]/10 text-[#FF6B6B]"
+                                            : "border-black/10 bg-white text-black/50 hover:bg-[#F5F2EC]"
+                                    }`}
+                                >
+                                    <LinkIcon className="size-5" />
+
+                                    <span className="text-sm font-medium">
+                                        URL
+                                    </span>
+                                </button>
+                            </div>
                         </div>
-                    </div>
+                    )}
 
+                    {/* ================================================= */}
                     {/* TEXT */}
+                    {/* ================================================= */}
+
                     {type === "TEXT" && (
                         <div className="space-y-2">
-                            <Label htmlFor="section-text">
+                            <Label>
                                 Isi Text
                             </Label>
 
@@ -262,7 +404,10 @@ export default function NewsSectionForm({
                         </div>
                     )}
 
+                    {/* ================================================= */}
                     {/* IMAGE */}
+                    {/* ================================================= */}
+
                     {type === "IMAGE" && (
                         <div className="space-y-2">
                             <Label htmlFor="section-image">
@@ -298,12 +443,24 @@ export default function NewsSectionForm({
                                         JPG, PNG, atau WEBP.
                                         Maksimal 2 MB.
                                     </p>
+
+                                    {isEdit &&
+                                        section?.imageUrl && (
+                                            <p className="text-xs text-black/40">
+                                                Kosongkan jika
+                                                tidak ingin
+                                                mengganti gambar.
+                                            </p>
+                                        )}
                                 </div>
                             </div>
                         </div>
                     )}
 
+                    {/* ================================================= */}
                     {/* YOUTUBE */}
+                    {/* ================================================= */}
+
                     {type === "YOUTUBE" && (
                         <div className="space-y-2">
                             <Label htmlFor="section-youtube">
@@ -331,7 +488,10 @@ export default function NewsSectionForm({
                         </div>
                     )}
 
-                    {/* Action */}
+                    {/* ================================================= */}
+                    {/* ACTION */}
+                    {/* ================================================= */}
+
                     <div className="flex justify-end gap-3 border-t border-black/10 pt-6">
                         <Button
                             type="button"
@@ -350,7 +510,9 @@ export default function NewsSectionForm({
                         >
                             {loading
                                 ? "Menyimpan..."
-                                : "Simpan Section"}
+                                : isEdit
+                                  ? "Simpan Perubahan"
+                                  : "Simpan Section"}
                         </Button>
                     </div>
                 </form>

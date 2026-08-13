@@ -123,14 +123,11 @@ export default function SchoolProfile({
                             Lokasi
                         </h3>
 
-                        <a
-                            href={school.googleMapsUrl}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="inline-block text-sm font-medium text-[#FF6B6B] hover:underline"
-                        >
-                            Buka Google Maps →
-                        </a>
+                        <div className="rounded-lg bg-[#F5F2EC] px-4 py-3">
+                            <p className="break-all text-sm text-black/70">
+                                {school.googleMapsUrl || "-"}
+                            </p>
+                        </div>
                     </div>
 
                     {/* Video */}
