@@ -19,6 +19,7 @@ import {
     CardTitle,
 } from "@/components/ui/card";
 import { Teacher } from "@/types/teacher";
+import { getStorageUrl } from "@/lib/storage-url";
 
 interface Props {
     teacher: Teacher | null;
@@ -49,7 +50,7 @@ export default function TeacherForm({
             setOrder(String(teacher.order));
 
             setPhoto(undefined);
-            setPreview(teacher.photoUrl ?? null);
+            setPreview(getStorageUrl(teacher.photoUrl) ?? null);
         } else {
             setName("");
             setPosition("");
