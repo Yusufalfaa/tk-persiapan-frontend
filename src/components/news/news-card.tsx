@@ -61,9 +61,9 @@ export default function NewsCard({ news }: NewsCardProps) {
                             h-full
                             items-center
                             justify-center
-                            bg-[#f3efff]
+                            bg-[#F5F2EC]
                             text-sm
-                            text-[#6d4fd1]/60
+                            text-black/50
                         "
                     >
                         Tidak ada gambar
