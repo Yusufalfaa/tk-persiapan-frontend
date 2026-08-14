@@ -7,6 +7,8 @@ import TeachersSection from "@/components/sections/teachers-section";
 import VideoProfileSection from "@/components/sections/video-profile-section";
 import VisionMissionSection from "@/components/sections/vision-mission-sections";
 
+export const dynamic = "force-dynamic";
+
 export default function Home() {
   return (
     <>

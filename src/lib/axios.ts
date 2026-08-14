@@ -1,7 +1,10 @@
 import axios from "axios";
 
 const api = axios.create({
-    baseURL: process.env.NEXT_PUBLIC_API_URL,
+    baseURL:
+        typeof window === "undefined"
+            ? process.env.API_INTERNAL_URL
+            : process.env.NEXT_PUBLIC_API_URL,
 });
 
 api.interceptors.request.use((config) => {

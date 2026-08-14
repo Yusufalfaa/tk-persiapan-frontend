@@ -287,14 +287,8 @@ export default function AdminList({
 
             setDeleteTarget(null);
 
-            /*
-             * Kalau admin terakhir di halaman
-             * dihapus, kembali ke halaman sebelumnya
-             * jika memang diperlukan.
-             */
             const nextPage =
-                admins.length === 1 &&
-                meta.page > 1
+                admins.length === 1 && meta.page > 1
                     ? meta.page - 1
                     : meta.page;
 

@@ -21,8 +21,6 @@ export default function Navbar() {
     event: React.MouseEvent<HTMLAnchorElement>,
     id: string,
   ) => {
-    // Kalau bukan homepage, biarkan Link melakukan
-    // navigasi ke /#section
     if (pathname !== "/") {
       return;
     }
@@ -40,7 +38,7 @@ export default function Navbar() {
       block: "start",
     });
   };
-
+  
   return (
     <header
       className="
@@ -71,14 +69,8 @@ export default function Navbar() {
             {menus.map((menu) => (
               <li key={menu.id}>
                 <Link
-                  href={
-                    pathname === "/"
-                      ? `#${menu.id}`
-                      : `/#${menu.id}`
-                  }
-                  onClick={(event) =>
-                    scrollToSection(event, menu.id)
-                  }
+                  href={pathname === "/" ? `#${menu.id}` : "/"}
+                  onClick={(event) => scrollToSection(event, menu.id)}
                   className="
                     font-semibold
                     text-[#241E3D]

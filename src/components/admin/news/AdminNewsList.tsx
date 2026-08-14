@@ -114,6 +114,11 @@ export default function AdminNewsList({
 
             setDeleteTarget(null);
 
+            if (news.length === 1 && page > 1) {
+                setPage((current) => current - 1);
+                return;
+            }
+
             await loadNews();
         } catch (error) {
             console.error(

@@ -108,6 +108,11 @@ export default function AdminTeacherList({
 
             setDeleteTarget(null);
 
+            if (teachers.length === 1 && page > 1) {
+                setPage((current) => current - 1);
+                return;
+            }
+
             await loadTeachers();
         } catch (error) {
             console.error(
