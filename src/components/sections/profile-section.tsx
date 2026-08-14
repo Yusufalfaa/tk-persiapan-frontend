@@ -8,7 +8,10 @@ export default async function ProfileSection() {
   return (
     <section
       id="profile"
-      className="bg-[#FFFDF7] py-[76px]"
+      className="
+        scroll-mt-[90px] 
+        bg-[#FFFDF7] 
+        py-[76px]"
     >
       <div className="mx-auto max-w-7xl px-8">
 
@@ -19,7 +22,7 @@ export default async function ProfileSection() {
             <div
               className="
                 mb-2
-                text-[18px]
+                text-[16px]
                 font-extrabold
                 uppercase
                 tracking-[1.5px]
@@ -72,7 +75,7 @@ export default async function ProfileSection() {
 
             {/* Facts */}
             <div className="mt-[22px] flex gap-[26px]">
-              <div>
+              <div className="flex flex-col items-center">
                 <div className="text-[22px] font-bold text-[#FF6B6B]">
                   2010
                 </div>
@@ -82,7 +85,7 @@ export default async function ProfileSection() {
                 </div>
               </div>
 
-              <div>
+              <div className="flex flex-col items-center">
                 <div className="text-[22px] font-bold text-[#FF6B6B]">
                   7
                 </div>
@@ -92,7 +95,7 @@ export default async function ProfileSection() {
                 </div>
               </div>
 
-              <div>
+              <div className="flex flex-col items-center">
                 <div className="text-[22px] font-bold text-[#FF6B6B]">
                   500+
                 </div>
@@ -108,6 +111,7 @@ export default async function ProfileSection() {
           <div className="overflow-hidden rounded-[24px] border-[6px] border-[#FFF3D0]">
             <Image
               src="/images/hero.png"
+              loading="eager"
               alt="TK Persiapan"
               width={600}
               height={450}

@@ -5,12 +5,15 @@ export default function HeroSection() {
         <section
             id="home"
             className="
+                scroll-mt-[80px]
                 relative
                 overflow-hidden
                 bg-gradient-to-br
                 from-[#D9F2FF]
                 to-[#DFF6E3]
+                pt-20
                 pb-10
+                md:pt-0
             "
         >
             {/* Decorative dots */}
@@ -154,6 +157,7 @@ export default function HeroSection() {
                         <Image
                             src="/images/hero.png"
                             alt="TK Persiapan"
+                            loading="eager"
                             fill
                             priority
                             sizes="(max-width: 1024px) 90vw, 500px"

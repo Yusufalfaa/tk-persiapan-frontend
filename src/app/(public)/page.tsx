@@ -1,4 +1,5 @@
 import ContactSection from "@/components/sections/contact-section";
+import ExtrasSection from "@/components/sections/extras-section";
 import HeroSection from "@/components/sections/hero-section";
 import NewsSection from "@/components/sections/news-section";
 import ProfileSection from "@/components/sections/profile-section";
@@ -14,6 +15,7 @@ export default function Home() {
       <VisionMissionSection />
       <VideoProfileSection />
       <TeachersSection />
+      <ExtrasSection />
       <NewsSection />
       <ContactSection />
     </>
