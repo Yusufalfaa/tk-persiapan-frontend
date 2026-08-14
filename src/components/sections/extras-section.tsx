@@ -118,7 +118,7 @@ export default function ExtrasSection() {
               <div
                 className="
                   mb-3
-                  h-[160px]
+                  h-[200px]
                   rounded-[24px]
                   bg-[#E2DED2]
                   transition-transform
@@ -160,7 +160,7 @@ export default function ExtrasSection() {
               <div
                 className="
                   mb-3
-                  h-[160px]
+                  h-[200px]
                   rounded-[24px]
                   bg-[#E2DED2]
                   transition-transform
@@ -202,7 +202,7 @@ export default function ExtrasSection() {
               <div
                 className="
                   mb-3
-                  h-[160px]
+                  h-[200px]
                   rounded-[24px]
                   bg-[#E2DED2]
                   transition-transform
@@ -244,7 +244,7 @@ export default function ExtrasSection() {
               <div
                 className="
                   mb-3
-                  h-[160px]
+                  h-[200px]
                   rounded-[24px]
                   bg-[#E2DED2]
                   transition-transform

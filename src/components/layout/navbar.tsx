@@ -28,15 +28,13 @@ export default function Navbar() {
       <header
         className="
           fixed
-          left-0
-          right-0
+          inset-x-0
           top-0
           z-50
           border-b
           border-[#E8E1D5]
           bg-[#FFFDF7]/95
           backdrop-blur-md
-          md:sticky
         "
       >
         <div className="mx-auto max-w-7xl px-6">
