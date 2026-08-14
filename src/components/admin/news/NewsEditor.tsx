@@ -57,6 +57,7 @@ import type {
 } from "@/types/news";
 
 import NewsSectionForm from "./NewsSectionForm";
+import { getStorageUrl } from "@/lib/storage-url";
 
 interface Props {
     news: NewsList;
@@ -671,13 +672,8 @@ export default function NewsEditor({
 
                                                         {section.imageUrl ? (
                                                             <img
-                                                                src={
-                                                                    section.imageUrl
-                                                                }
-                                                                alt={`Section ${
-                                                                    index +
-                                                                    1
-                                                                }`}
+                                                                src={getStorageUrl(section.imageUrl) ?? ""}
+                                                                alt={`Section ${index +1}`}
                                                                 className="max-h-72 rounded-lg object-cover"
                                                             />
                                                         ) : (

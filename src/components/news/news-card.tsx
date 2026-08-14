@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { NewsList } from "@/types/news";
+import { getStorageUrl } from "@/lib/storage-url";
 
 interface NewsCardProps {
     news: NewsList;
@@ -30,46 +31,56 @@ export default function NewsCard({ news }: NewsCardProps) {
     return (
         <article
             className="
+                group
                 overflow-hidden
                 rounded-2xl
-                border
-                border-[#6d4fd1]/10
                 bg-white
-                shadow-[0_12px_26px_rgba(90,70,150,0.1)]
-                transition
+                shadow-[0_10px_30px_rgba(36,30,61,0.08)]
+                transition-all
+                duration-200
                 hover:-translate-y-1
+                hover:shadow-[0_16px_35px_rgba(36,30,61,0.12)]
             "
         >
             {/* Thumbnail */}
-            <div className="relative aspect-video overflow-hidden">
-                {news.thumbnailUrl ? (
-                    <img
-                        src={news.thumbnailUrl}
-                        alt={news.title}
-                        className="
-                            absolute
-                            inset-0
-                            h-full
-                            w-full
-                            object-cover
-                        "
-                    />
-                ) : (
-                    <div
-                        className="
-                            flex
-                            h-full
-                            items-center
-                            justify-center
-                            bg-[#F5F2EC]
-                            text-sm
-                            text-black/50
-                        "
-                    >
-                        Tidak ada gambar
-                    </div>
-                )}
-            </div>
+            <Link
+                href={`/berita/${news.slug}`}
+                className="block"
+                aria-label={`Baca berita: ${news.title}`}
+            >
+                <div className="relative aspect-video overflow-hidden">
+                    {news.thumbnailUrl ? (
+                        <img
+                            src={getStorageUrl(news.thumbnailUrl) ?? ""}
+                            alt={news.title}
+                            className="
+                                absolute
+                                inset-0
+                                h-full
+                                w-full
+                                object-cover
+                                transition-transform
+                                duration-300
+                                group-hover:scale-105
+                            "
+                        />
+                    ) : (
+                        <div
+                            className="
+                                flex
+                                h-full
+                                items-center
+                                justify-center
+                                bg-[#F5F2EC]
+                                text-sm
+                                text-black/50
+                            "
+                        >
+                            Tidak ada gambar
+                        </div>
+                    )}
+                </div>
+            </Link>
 
             {/* Content */}
             <div className="p-6">

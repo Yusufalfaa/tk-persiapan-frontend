@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { Menu, X } from "lucide-react";
+import { usePathname } from "next/navigation";
 
 const menus = [
   { label: "Beranda", id: "home" },
@@ -16,13 +17,12 @@ const menus = [
 export default function MobileMenu() {
   const [open, setOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const pathname = usePathname();
 
-  // Pastikan portal hanya dibuat di client
   useEffect(() => {
     setMounted(true);
   }, []);
 
-  // Tutup ketika kembali ke desktop
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth >= 768) {
@@ -37,7 +37,6 @@ export default function MobileMenu() {
     };
   }, []);
 
-  // Lock scroll ketika menu terbuka
   useEffect(() => {
     if (!open) {
       document.body.style.overflow = "";
@@ -55,9 +54,13 @@ export default function MobileMenu() {
     event: React.MouseEvent<HTMLAnchorElement>,
     id: string,
   ) => {
-    event.preventDefault();
-
     setOpen(false);
+
+    if (pathname !== "/") {
+      return;
+    }
+
+    event.preventDefault();
 
     const element = document.getElementById(id);
 
@@ -188,14 +191,19 @@ export default function MobileMenu() {
                   {menus.map((menu) => (
                     <li key={menu.id}>
                       <a
-                        href={`#${menu.id}`}
+                        href={
+                          pathname === "/"
+                            ? `#${menu.id}`
+                            : `/#${menu.id}`
+                        }
                         onClick={(event) =>
                           handleMenuClick(event, menu.id)
                         }
                         className="
                           block
                           rounded-xl
-                          px-4 py-3.5
+                          px-4
+                          py-3.5
                           text-lg
                           font-semibold
                           text-[#241E3D]

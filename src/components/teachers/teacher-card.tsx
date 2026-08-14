@@ -1,5 +1,6 @@
 import { UserRound } from "lucide-react";
 import type { Teacher } from "@/types/teacher";
+import { getStorageUrl } from "@/lib/storage-url";
 
 interface Props {
   teacher: Teacher;
@@ -35,7 +36,7 @@ export default function TeacherCard({ teacher }: Props) {
       >
         {teacher.photoUrl ? (
           <img
-            src={teacher.photoUrl}
+            src={getStorageUrl(teacher.photoUrl) ?? ""}
             alt={teacher.name}
             className="
               h-full

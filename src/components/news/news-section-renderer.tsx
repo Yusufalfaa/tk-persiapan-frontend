@@ -1,3 +1,4 @@
+import { getStorageUrl } from "@/lib/storage-url";
 import type { NewsSection } from "@/types/news";
 
 interface Props {
@@ -52,7 +53,7 @@ export default function NewsSectionRenderer({
             {section.type === "IMAGE" && section.imageUrl && (
                 <div className="relative aspect-video overflow-hidden rounded-xl">
                     <img
-                        src={section.imageUrl}
+                        src={getStorageUrl(section.imageUrl) ?? ""}
                         alt={title}
                         className="
                             h-full

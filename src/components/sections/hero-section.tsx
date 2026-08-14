@@ -13,7 +13,8 @@ export default function HeroSection() {
                 to-[#DFF6E3]
                 pt-20
                 pb-10
-                md:pt-0
+                md:pt-20
+                lg:pt-16
             "
         >
             {/* Decorative dots */}

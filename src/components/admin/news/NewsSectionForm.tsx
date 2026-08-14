@@ -30,6 +30,7 @@ import type {
 } from "@/types/news";
 
 import RichTextEditor from "../../news/RichTextEditor";
+import { getStorageUrl } from "@/lib/storage-url";
 
 interface Props {
     newsId: number;
@@ -72,11 +73,9 @@ export default function NewsSectionForm({
     const [image, setImage] =
         useState<File | undefined>();
 
-    const [preview, setPreview] =
-        useState<string | null>(
-            section?.imageUrl ?? null
-        );
-
+    const [preview, setPreview] = useState<string | null>(
+        getStorageUrl(section?.imageUrl)
+    );
     const [loading, setLoading] =
         useState(false);
 
@@ -110,13 +109,7 @@ export default function NewsSectionForm({
 
         setPreview(previewUrl);
     }
-
-    /*
-     * Fungsi ini hanya dipakai saat CREATE.
-     *
-     * Saat EDIT fungsi ini tidak mungkin dipanggil
-     * karena tombol type tidak dirender.
-     */
+    
     function handleTypeChange(
         newType: NewsSectionType
     ) {
@@ -165,15 +158,6 @@ export default function NewsSectionForm({
             return;
         }
 
-        /*
-         * Validasi IMAGE
-         *
-         * Saat create:
-         * wajib ada image.
-         *
-         * Saat edit:
-         * boleh menggunakan image lama.
-         */
         if (
             type === "IMAGE" &&
             !image &&
@@ -188,16 +172,6 @@ export default function NewsSectionForm({
         try {
             setLoading(true);
 
-            /*
-             * ============================================
-             * EDIT
-             * ============================================
-             *
-             * Type sengaja TIDAK dikirim.
-             *
-             * Karena type section tidak boleh berubah
-             * saat editing.
-             */
             if (isEdit && section) {
                 await updateNewsSection(
                     section.id,

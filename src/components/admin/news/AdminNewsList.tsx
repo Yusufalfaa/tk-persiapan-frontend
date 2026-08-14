@@ -30,6 +30,7 @@ import {
 } from "@/services/news.service";
 
 import type { NewsList } from "@/types/news";
+import { getStorageUrl } from "@/lib/storage-url";
 
 interface Props {
     onCreate: () => void;
@@ -198,12 +199,8 @@ export default function AdminNewsList({
                                                 <td className="px-4 py-4">
                                                     {item.thumbnailUrl ? (
                                                         <img
-                                                            src={
-                                                                item.thumbnailUrl
-                                                            }
-                                                            alt={
-                                                                item.title
-                                                            }
+                                                            src={getStorageUrl(item.thumbnailUrl) ?? ""}
+                                                            alt={item.title}
                                                             className="h-14 w-20 rounded-md object-cover"
                                                         />
                                                     ) : (

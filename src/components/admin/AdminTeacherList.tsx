@@ -30,6 +30,7 @@ import {
 } from "@/services/teacher.service";
 
 import type { Teacher } from "@/types/teacher";
+import { getStorageUrl } from "@/lib/storage-url";
 
 interface AdminTeacherListProps {
     onCreate: () => void;
@@ -98,11 +99,6 @@ export default function AdminTeacherList({
 
         try {
             setDeleting(true);
-
-            console.log(
-                "Deleting teacher:",
-                deleteTarget
-            );
 
             await deleteTeacher(deleteTarget.id);
 
@@ -192,12 +188,8 @@ export default function AdminTeacherList({
                                             <td className="px-4 py-4">
                                                 {teacher.photoUrl ? (
                                                     <img
-                                                        src={
-                                                            teacher.photoUrl
-                                                        }
-                                                        alt={
-                                                            teacher.name
-                                                        }
+                                                        src={getStorageUrl(teacher.photoUrl) ?? ""}
+                                                        alt={teacher.name}
                                                         className="h-12 w-9 rounded-md object-cover"
                                                     />
                                                 ) : (

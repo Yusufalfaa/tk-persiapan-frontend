@@ -139,15 +139,20 @@ export default async function ContactSection() {
                     Telepon
                   </div>
 
-                  <div
+                  <a
+                    href={`https://wa.me/${school.phone.replace(/\D/g, "").replace(/^0/, "62")}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="
                       text-[13.5px]
                       leading-[1.6]
                       text-[#3A3A3A]
+                      transition-colors
+                      hover:text-[#FF6B6B]
                     "
                   >
                     {school.phone}
-                  </div>
+                  </a>
                 </div>
               </div>
             )}
@@ -177,7 +182,7 @@ export default async function ContactSection() {
                   <div
                     className="
                       mb-1
-                      font-semibold 
+                      font-semibold
                       text-[14px]
                       text-[#FF6B6B]
                     "
@@ -185,15 +190,18 @@ export default async function ContactSection() {
                     Email
                   </div>
 
-                  <div
+                  <a
+                    href={`mailto:${school.email}`}
                     className="
                       text-[13.5px]
                       leading-[1.6]
                       text-[#3A3A3A]
+                      transition-colors
+                      hover:text-[#FF6B6B]
                     "
                   >
                     {school.email}
-                  </div>
+                  </a>
                 </div>
               </div>
             )}

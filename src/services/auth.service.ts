@@ -24,10 +24,7 @@ export async function login(request: LoginRequest) {
         throw new Error("Login failed");
     }
 
-    const result: { data: LoginResponse } =
-        await response.json();
-
-    console.log("LOGIN RESPONSE:", result);
+    const result: { data: LoginResponse } = await response.json();
 
     localStorage.setItem(
         "accessToken",
